@@ -10,7 +10,7 @@ kwargs = {'name': 'geometry',
           'scripts': ['bin/geometry_service', 'bin/geometry_service.fcgi'],
           'license': 'MIT'}
 
-instllrqrs = ['dill', 'spyne', 'sortedcontainers', 'flup6', 'Werkzeug']
+instllrqrs = ['dill', 'lxml', 'msgpack-python', 'spyne', 'sortedcontainers', 'flup6', 'Werkzeug']
 kwargs['install_requires'] = instllrqrs
 
 clssfrs = ["Programming Language :: Python",
@@ -25,6 +25,6 @@ clssfrs = ["Programming Language :: Python",
            "Topic :: Software Development :: Libraries :: Python Modules"]
 kwargs['classifiers'] = clssfrs
 
-kwargs['version'] = '0.4'
+kwargs['version'] = '0.5'
 
 setup(**kwargs)

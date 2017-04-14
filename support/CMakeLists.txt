@@ -10,8 +10,6 @@ set(BUILD_PYSPICE 1)
 
 add_subdirectory(spice)
 
-add_subdirectory(python)
-
 include(ExternalProject)
 
 macro(sidc_install_lib_external target source md5)
