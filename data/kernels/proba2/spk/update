@@ -1,7 +1,4 @@
 #!/bin/sh
 
-URL=http://proba2.oma.be/aux/data/spice/kernels/spk
-TGT=proba2_tle_0001.bsp
-MOD=$(stat -f '%Sm' $TGT)
-
-curl -z "$MOD" -O $URL/$TGT
+URL=http://proba2.oma.be/aux/data/spice/kernels/spk/proba2_tle_0001.bsp
+wget -N $URL

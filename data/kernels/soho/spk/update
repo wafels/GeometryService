@@ -1,7 +1,4 @@
 #!/bin/sh
 
 URL=https://sohowww.nascom.nasa.gov/data/ancillary/orbit/spice/soho_orbit.bsp
-TGT=soho_orbit.bsp
-MOD=$(stat -f '%Sm' $TGT)
-
-curl -z "$MOD" -O $URL/$TGT
+wget -N $URL
