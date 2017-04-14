@@ -3,9 +3,9 @@ from setuptools import setup
 kwargs = {'name': 'geometry',
           'description': 'Solar System Geometry Service',
           'long_description': open('README.md').read(),
-          'author': 'SIDC ROB',
-          'author_email': 'bogdan@oma.be',
-          'url': 'https://sidc.be',
+          'author': 'SWHV ROB',
+          'author_email': 'swhv@oma.be',
+          'url': 'https://github.com/Helioviewer-Project/GeometryService',
           'packages': ['geometry'],
           'scripts': ['bin/geometry_service', 'bin/geometry_service.fcgi'],
           'license': 'MIT'}
