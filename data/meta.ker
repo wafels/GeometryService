@@ -1,0 +1,18 @@
+KPL/MK
+
+\begindata
+
+    PATH_VALUES     = ( '${CMAKE_INSTALL_PREFIX}/data/generic' )
+    PATH_SYMBOLS    = ( 'K' )
+    KERNELS_TO_LOAD = ( '$K/fk/bodyfixed_assoc.tf'
+                        '$K/fk/geomagnetic.tf'
+                        '$K/fk/rssd0001.tf'
+                        '$K/lsk/naif0012.tls'
+                        '$K/pck/earth_720101_070426.bpc'
+                        '$K/pck/earth_070425_370426_predict.bpc'
+                        '$K/pck/pck00010.tpc'
+                        '$K/ck/geomagnetic.bc'
+                        '$K/sclk/tdt_shifted.tsc'
+                        '$K/spk/de430.bsp' )
+
+\begintext

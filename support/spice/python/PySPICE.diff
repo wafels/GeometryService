@@ -1,0 +1,206 @@
+diff -x .git -ur /Users/bogdan/git/PySPICE/mkwrapper.py PySPICE/mkwrapper.py
+--- /Users/bogdan/git/PySPICE/mkwrapper.py	2013-09-23 09:44:28.000000000 +0200
++++ PySPICE/mkwrapper.py	2013-09-27 22:16:12.000000000 +0200
+@@ -110,10 +110,10 @@
+     elif type in ('ConstSpiceDouble', 'SpiceDouble'):
+         param_obj.py_string = 'd'
+     elif type in ('ConstSpiceBoolean', 'SpiceBoolean'):
++        param_obj.py_string = 'O'
++        param_obj.get_py_fn = 'get_py_boolean'
++    elif type in ('ConstSpiceInt', 'SpiceInt', 'int'):
+         param_obj.py_string = 'i'
+-    elif type in ('ConstSpiceInt', 'SpiceInt'):
+-        # put a long for a spice int since they are long integers
+-        param_obj.py_string = 'l'
+     elif type == 'SpiceCell':
+         param_obj.py_string = 'O'
+         param_obj.spice_obj = 'Cell'
+@@ -430,7 +430,7 @@
+     for output in output_list:
+         # see if memory needs to be allocated for this variable
+         if output.allocate_memory:
+-            buffer.write("\n\n  %s = malloc(sizeof(%s) * %s);" % \
++            buffer.write("\n\n  %s = PyMem_Malloc(sizeof(%s) * %s);" % \
+                 (output.name, output.type, output.allocate_memory))
+ 
+     # build the input name list for calling the C function
+@@ -486,7 +486,7 @@
+ 
+     for output in output_list:
+         if output.allocate_memory:
+-            buffer.write('\n    free(%s);' % output.name)
++            buffer.write('\n    PyMem_Free(%s);' % output.name)
+ 
+     buffer.write('\n    return NULL;')
+     buffer.write('\n  }\n')
+@@ -615,7 +615,7 @@
+     if output_list_string:
+         if check_found:
+             buffer.write(
+-                '\n  if(!found) {\n    return Py_None;\n  } else {\n    ')
++                '\n  if(!found) {\n    Py_INCREF(Py_None);\n    return Py_None;\n  } else {\n    ')
+         else:
+             buffer.write('\n  ')
+ 
+@@ -625,7 +625,7 @@
+ 
+         for output in output_list:
+             if output.allocate_memory:
+-                buffer.write('\n  free(%s);' % output.name)
++                buffer.write('\n  PyMem_Free(%s);' % output.name)
+ 
+         buffer.write('\n  return returnVal;');
+ 
+@@ -678,9 +678,8 @@
+         reg_type = 'double'
+     elif type in ('ConstSpiceBoolean', 'SpiceBoolean'):
+         reg_type = 'char'
+-    elif type in ('ConstSpiceInt', 'SpiceInt'):
+-        # put a long for a spice int since they are long integers
+-        reg_type = 'long'
++    elif type in ('ConstSpiceInt', 'SpiceInt', 'int'):
++        reg_type = 'int'
+ 
+     return reg_type
+ 
+diff -x .git -ur /Users/bogdan/git/PySPICE/pyspice.c PySPICE/pyspice.c
+--- /Users/bogdan/git/PySPICE/pyspice.c	2013-09-23 09:44:28.000000000 +0200
++++ PySPICE/pyspice.c	2013-09-27 22:10:56.000000000 +0200
+@@ -40,6 +40,11 @@
+     return list;
+ }
+ 
++PyObject * get_py_boolean(SpiceBoolean* spicebool)
++{
++    return Py_BuildValue( "O", *spicebool ? Py_True : Py_False);
++}
++
+ /**
+  * Create a Python Ellipse object from a SpiceEllipse object
+  */
+@@ -125,7 +130,7 @@
+ 
+ SpicePlane * get_spice_plane(PyObject *py_obj)
+ {
+-    SpicePlane *spice_obj = malloc(sizeof(SpicePlane));
++    SpicePlane *spice_obj = PyMem_Malloc(sizeof(SpicePlane));
+ 
+     PyObject *l = NULL, *f = NULL;
+ 
+@@ -153,7 +158,7 @@
+     char failed = 0, *sections[3] = {"center", "semi_major", "semi_minor"};
+     int i, j;
+ 
+-    SpiceEllipse *spice_ellipse = malloc(sizeof(SpiceEllipse));
++    SpiceEllipse *spice_ellipse = PyMem_Malloc(sizeof(SpiceEllipse));
+ 
+     double *ellipse_sections[3] = {spice_ellipse->center, spice_ellipse->semiMajor, spice_ellipse->semiMinor};
+ 
+@@ -171,7 +176,7 @@
+     }
+ 
+     if(failed) {
+-        free(spice_ellipse);
++        PyMem_Free(spice_ellipse);
+         spice_ellipse = NULL;
+     }
+ 
+@@ -208,7 +213,7 @@
+ 
+     py_ellipse = get_py_ellipse(spice_ellipse);
+ 
+-    free(spice_ellipse);
++    PyMem_Free(spice_ellipse);
+ 
+     return py_ellipse;
+ }
+@@ -223,7 +228,7 @@
+     plane = get_spice_plane(py_obj);
+ 
+     PyObject *py_obj2 = get_py_plane(plane);
+-    free(plane);
++    PyMem_Free(plane);
+ 
+     return py_obj2;
+ }
+diff -x .git -ur /Users/bogdan/git/PySPICE/pyspice.h PySPICE/pyspice.h
+--- /Users/bogdan/git/PySPICE/pyspice.h	2013-09-23 09:44:28.000000000 +0200
++++ PySPICE/pyspice.h	2013-09-27 22:11:52.000000000 +0200
+@@ -33,9 +33,9 @@
+ /* Stuff for getting the short error message
+ #define SPICE_MESSAGE_LEN 25
+ char *spice_msg = NULL;                                                 \
+-spice_msg = (char *)malloc(sizeof(char) * SPICE_MESSAGE_LEN);           \
++spice_msg = (char *)PyMem_Malloc(sizeof(char) * SPICE_MESSAGE_LEN);     \
+ getmsg_c("short", SPICE_MESSAGE_LEN, spice_msg);                        \
+-free(spice_msg);                                                        \
++PyMem_Free(spice_msg);                                                  \
+ */
+ 
+ #define PYSPICE_CHECK_FAILED {                                          \
+@@ -44,7 +44,7 @@
+                                                                         \
+     /* check if the function call failed */                             \
+     if(failed_c()) {                                                    \
+-      spice_detail = (char *)malloc(sizeof(char) * SPICE_DETAIL_LEN);   \
++      spice_detail=(char *)PyMem_Malloc(sizeof(char)*SPICE_DETAIL_LEN); \
+                                                                         \
+       getmsg_c("long", SPICE_DETAIL_LEN, spice_detail);                 \
+                                                                         \
+@@ -52,13 +52,14 @@
+                                                                         \
+       PYSPICE_MAKE_EXCEPTION(spice_detail);                             \
+                                                                         \
+-      free(spice_detail);                                               \
++      PyMem_Free(spice_detail);                                         \
+                                                                         \
+       failed = 1;                                                       \
+     }                                                                   \
+   }
+ 
+ /* Functions defined in the implementation file */
++PyObject * get_py_boolean(SpiceBoolean* spicebool);
+ PyObject * get_py_ellipse(SpiceEllipse *spice_obj);
+ PyObject * get_py_cell(SpiceCell *cell);
+ PyObject * get_py_ekattdsc(SpiceEKAttDsc *spice_obj);
+diff -x .git -ur /Users/bogdan/git/PySPICE/setup.py PySPICE/setup.py
+--- /Users/bogdan/git/PySPICE/setup.py	2013-09-23 09:44:28.000000000 +0200
++++ PySPICE/setup.py	2015-01-16 11:13:28.000000000 +0100
+@@ -14,6 +14,7 @@
+ ROOT_DIR = os.path.dirname(__file__)
+ MODULE_PATH = os.path.join(ROOT_DIR, SPICE_MODULE_C)
+ 
++'''
+ CSPICE_SRC = os.environ.get('CSPICE_SRC', os.path.join(ROOT_DIR, 'cspice'))
+ 
+ if not os.path.exists(CSPICE_SRC):
+@@ -21,6 +22,7 @@
+                'Please untar the source there or set the environment '
+                'variable CSPICE_SRC') % (CSPICE_SRC,)
+     sys.exit(message)
++'''
+ 
+ # check to see if the lib files are named lib*
+ remove_files = []
+@@ -80,15 +82,15 @@
+         sys.argv.append('%s%s' % (flag, path))
+ 
+ try:
+-    build_cspice()
+-    make_spice_module()
+-    find_libs()
+-    set_build_paths()
++    #build_cspice()
++    #make_spice_module()
++    #find_libs()
++    #set_build_paths()
+ 
+     module1 = Extension(
+         '_spice',
+         sources = ['pyspice.c', 'spicemodule.c'],
+-        libraries = ['cspice'],
++        libraries = ['spice'],
+     )
+ 
+     setup(
+Only in PySPICE: spicemodule.c

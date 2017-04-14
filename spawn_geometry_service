@@ -1,0 +1,19 @@
+#!/bin/sh
+
+NGINX="${SIDC_SUPPORT}/sbin/nginx -c ${SIDC_SUPPORT}/conf/nginx_geometry.conf"
+
+echo "Starting nginx."
+$NGINX
+
+if [ $? -ne 0 ]; then
+    echo "Trying to restart nginx."
+    $NGINX -s stop && $NGINX
+fi
+
+if [ $? -ne 0 ]; then
+    echo "Error: could not restart nginx."
+    exit 1
+fi
+
+echo "Starting the geometry service."
+${SIDC_SUPPORT}/bin/spawn-fcgi -n -p ${GEOMETRY_FCGI_PORT} -a 127.0.0.1 ${SIDC_INSTALL_PYTHON}/bin/geometry_service.fcgi

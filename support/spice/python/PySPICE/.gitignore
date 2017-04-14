@@ -1,0 +1,4 @@
+spicemodule.c
+build
+*.pyc
+cspice
