@@ -43,8 +43,8 @@ def utc2tai(utc, utc_end, deltat):
     try:
         tai_beg = sp.unitim(sp.utc2et(utc), 'et', 'tai')
         tai_end = sp.unitim(sp.utc2et(utc_end), 'et', 'tai')
-    except sp.SpiceException as inst:
-        raise GeometrySpiceError(inst.message)
+    except sp.stypes.SpiceyError as ex:
+        raise GeometrySpiceError(ex.value)
 
     tais = []
     while tai_beg <= tai_end and len(tais) < 1e6:
@@ -62,8 +62,8 @@ def position_spice(xfunc, tais, **kwargs):
             date = sp.et2utc(et, 'isoc', 3)
 
             res[date] = xfunc(pos)
-    except sp.SpiceException as inst:
-        return inst.message
+    except sp.stypes.SpiceyError as ex:
+        return ex.value
     else:
         return res
 
@@ -76,8 +76,8 @@ def state_spice(xfunc, tais, **kwargs):
             date = sp.et2utc(et, 'isoc', 3)
 
             res[date] = [xfunc(sta[0:3]), sta[3:6]]
-    except sp.SpiceException as inst:
-        return inst.message
+    except sp.stypes.SpiceyError as ex:
+        return ex.value
     else:
         return res
 
@@ -90,8 +90,8 @@ def xform_spice(xfunc, tais, **kwargs):
             date = sp.et2utc(et, 'isoc', 3)
 
             res[date] = xfunc(mat)
-    except sp.SpiceException as inst:
-        return inst.message
+    except sp.stypes.SpiceyError as ex:
+        return ex.value
     else:
         return res
 

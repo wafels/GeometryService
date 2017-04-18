@@ -2,6 +2,10 @@
 execute_process(COMMAND ${CMAKE_INSTALL_PREFIX}/python/bin/python -c "import sys,site; sys.stdout.write(site.getsitepackages()[0])" OUTPUT_VARIABLE py_pkgs)
 
 # improve this
+if(NOT CMAKE_VERSION VERSION_LESS 3.0) # i.e CMAKE_VERSION >= 3.0 for property location
+    cmake_policy(SET CMP0026 OLD)
+endif()
+
 get_property(spice_lib TARGET spice PROPERTY LOCATION)
 get_filename_component(spice_lib_name ${spice_lib} NAME)
 set(spice_target_location ${SIDC_INSTALL_LIB}/${spice_lib_name})
