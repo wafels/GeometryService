@@ -190,15 +190,15 @@ def windows_method():
 
 try:
     # First check for spice
-    check_for_spice()
+    #check_for_spice()
 
-    print("Host OS: {}".format(host_OS))
-    if host_OS == "Linux" or host_OS == "Darwin":
-        mac_linux_method()
-    elif host_OS == "Windows":
-        windows_method()
-    else:
-        sys.exit("Unsupported OS: {0}".format(host_OS))
+    #print("Host OS: {}".format(host_OS))
+    #if host_OS == "Linux" or host_OS == "Darwin":
+    #    mac_linux_method()
+    #elif host_OS == "Windows":
+    #    windows_method()
+    #else:
+    #    sys.exit("Unsupported OS: {0}".format(host_OS))
 
     readme = open('README.rst', 'r')
     readmetext = readme.read()
