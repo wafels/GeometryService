@@ -1,0 +1,38 @@
+package:
+  name: spiceypy
+  version: "1.2.0.dev0"
+
+source:
+  path: ../
+
+build:
+    number: 0
+
+requirements:
+    build:
+        - python
+        - setuptools
+        - six
+        - numpy
+    run:
+        - python
+        - setuptools
+        - six
+        - numpy
+
+test:
+    imports:
+        - spiceypy
+    requires:
+        - numpy
+        - pytest
+        - six
+
+about:
+    home: https://github.com/AndrewAnnex/SpiceyPy
+    license: MIT License
+    summary: 'A Python Wrapper for the NAIF CSPICE Toolkit'
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml

@@ -75,3 +75,5 @@ ExternalProject_Add(python
     BUILD_COMMAND     make
     INSTALL_DIR       ${SIDC_INSTALL_PYTHON}
     INSTALL_COMMAND   make install)
+
+add_subdirectory(python)

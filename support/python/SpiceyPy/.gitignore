@@ -1,0 +1,39 @@
+.DS_Store
+.DS_Store?
+*.o
+.tar
+.gz
+.zip
+*.pyc
+*.so
+
+# Spice Kernels
+*.bsp
+*.bpc
+*.ek
+*.tpc
+*.tsc
+*.tf
+*.tls
+*.ti
+*.bc
+
+# Cspice
+cspice/
+
+# Test meta kernels
+spiceypy/tests/*.txt
+
+# Docs
+docs/_build
+
+# Pycharm specific things
+.idea/
+
+# python things
+*.egg-info*
+dist/
+.cache/
+__pycache__/
+spiceypy/__pycache__/
+spiceypy/utils/__pycache__/

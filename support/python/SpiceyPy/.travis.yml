@@ -1,0 +1,25 @@
+language: python
+sudo: false
+dist: trusty
+python:
+- 2.7
+- 3.5
+- 3.6
+before_install:
+- pip install twine
+- pip install -r requirements.txt
+install:
+- python setup.py install
+script:
+- coverage run --source=spiceypy setup.py test
+after_success:
+- coveralls
+deploy:
+  provider: pypi
+  user: andrewannex
+  password:
+    secure: YXA8LYIyAZ5HA2In4H/vUaCaVow9HbvKNT/TTT9OaH91Fszspr1uFo9mRQLNJlBViGgy2SaqNQITzlRdFyIcDstqRGPDQUw3xNIKvZ7YuHIzG1TVWNVpJsZf2ha1+JxozPTS2c2tlrS/LR7N4hYVtLOipaYAK2ucmB8sDu4dkws=
+  on:
+    tags: true
+    branch: master
+    repo: AndrewAnnex/SpiceyPy
