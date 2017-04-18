@@ -20,6 +20,8 @@ from spyne.error import ValidationError
 
 from . import geometry_spice as gs
 
+sp.stypes.errorformat = "{long}"
+
 class GeometrySpiceError(Fault):
     __type_name__ = 'SpiceError'
     __namespace__ = 'sidc.service.geometry'
