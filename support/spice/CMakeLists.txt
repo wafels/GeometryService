@@ -42,5 +42,3 @@ spice_bin(spkmrg_c spkmerge)
 spice_bin(tobin_c tobin)
 spice_bin(toxfr_c toxfr)
 spice_bin(versn_c version)
-
-add_subdirectory(python)
