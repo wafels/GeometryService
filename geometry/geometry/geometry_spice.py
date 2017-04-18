@@ -1,6 +1,6 @@
 
 import os
-import spice as sp
+import spiceypy as sp
 
 def _furnish(directory, kernel):
     name = os.path.join(directory, kernel)

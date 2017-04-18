@@ -1,1 +1,1 @@
-# Helioviewer Geometry Service
+# Solar System Geometry Service

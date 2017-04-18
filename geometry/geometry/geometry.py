@@ -1,7 +1,7 @@
 
 import math
 import multiprocessing as mp
-import spice as sp
+import spiceypy as sp
 
 import dill
 
