@@ -21,22 +21,29 @@ class SolarSystemGeometryService(ServiceBase):
          String(min_occurs=0), String(min_occurs=0), String(min_occurs=0), Float(min_occurs=0),
          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def position(ctx, utc, observer, target, ref, abcorr, kind, utc_end, deltat):
-        res = geometry.position(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
-        return res
+        return geometry.position(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
 
     @rpc(String, String, String, String,
          String(min_occurs=0), String(min_occurs=0), String(min_occurs=0), Float(min_occurs=0),
          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def state(ctx, utc, observer, target, ref, abcorr, kind, utc_end, deltat):
-        res = geometry.state(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
-        return res
+        return geometry.state(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
 
     @rpc(String, String, String,
         String(min_occurs=0), String(min_occurs=0), Float(min_occurs=0),
         _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def transform(ctx, utc, from_ref, to_ref, kind, utc_end, deltat):
-        res = geometry.xform(utc, utc_end, deltat, kind, from_ref, to_ref)
-        return res
+        return geometry.xform(utc, utc_end, deltat, kind, from_ref, to_ref)
+
+    @rpc(String, String, String(min_occurs=0), Float(min_occurs=0),
+        _returns=AnyDict, _throws=geometry.GeometrySpiceError)
+    def utc2scs(ctx, utc, sc, utc_end, deltat):
+        return geometry.utc2scs(utc, utc_end, deltat, sc)
+
+    @rpc(String, String,
+        _returns=AnyDict, _throws=geometry.GeometrySpiceError)
+    def scs2utc(ctx, scs, sc):
+        return geometry.scs2utc(scs, sc)
 
 #####
 

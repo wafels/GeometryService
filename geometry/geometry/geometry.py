@@ -61,9 +61,9 @@ def position_spice(xfunc, tais, **kwargs):
         for tai in tais:
             et = sp.unitim(tai, 'tai', 'et')
             pos = sp.spkezp(kwargs['target'], et, kwargs['ref'], kwargs['abcorr'], kwargs['observer'])[0]
-            date = sp.et2utc(et, 'isoc', 3)
+            utc = sp.et2utc(et, 'isoc', 3)
 
-            res[date] = xfunc(pos)
+            res[utc] = xfunc(pos)
     except sp.stypes.SpiceyError as ex:
         return ex.value
     else:
@@ -75,9 +75,9 @@ def state_spice(xfunc, tais, **kwargs):
         for tai in tais:
             et = sp.unitim(tai, 'tai', 'et')
             sta = sp.spkez(kwargs['target'], et, kwargs['ref'], kwargs['abcorr'], kwargs['observer'])[0]
-            date = sp.et2utc(et, 'isoc', 3)
+            utc = sp.et2utc(et, 'isoc', 3)
 
-            res[date] = [xfunc(sta[0:3]), sta[3:6]]
+            res[utc] = [xfunc(sta[0:3]), sta[3:6]]
     except sp.stypes.SpiceyError as ex:
         return ex.value
     else:
@@ -89,11 +89,39 @@ def xform_spice(xfunc, tais, **kwargs):
         for tai in tais:
             et = sp.unitim(tai, 'tai', 'et')
             mat = sp.pxform(kwargs['from_ref'], kwargs['to_ref'], et)
-            date = sp.et2utc(et, 'isoc', 3)
+            utc = sp.et2utc(et, 'isoc', 3)
 
-            res[date] = xfunc(mat)
+            res[utc] = xfunc(mat)
     except sp.stypes.SpiceyError as ex:
         return ex.value
+    else:
+        return res
+
+def utc2scs_spice(tais, sc):
+    res = {}
+    try:
+        scid = sp.bodn2c(sc)
+        for tai in tais:
+            et = sp.unitim(tai, 'tai', 'et')
+            obt = sp.sce2s(scid, et)
+            utc = sp.et2utc(et, 'isoc', 3)
+
+            res[utc] = obt
+    except sp.stypes.SpiceyError as ex:
+        raise GeometrySpiceError(ex.value)
+    else:
+        return res
+
+def scs2utc_spice(scs, sc):
+    res = {}
+    try:
+        scid = sp.bodn2c(sc)
+        et = sp.scs2e(scid, scs)
+        utc = sp.et2utc(et, 'isoc', 3)
+
+        res[scs] = utc
+    except sp.stypes.SpiceyError as ex:
+        raise GeometrySpiceError(ex.value)
     else:
         return res
 
@@ -169,6 +197,12 @@ def xform(utc, utc_end, deltat, kind, from_ref, to_ref):
     tais = utc2tai(utc, utc_end, deltat)
     return distribute_work(xform_spice, xfunc, tais, **kwargs)
 
+def utc2scs(utc, utc_end, deltat, sc):
+    tais = utc2tai(utc, utc_end, deltat)
+    return utc2scs_spice(tais, sc)
+
+def scs2utc(scs, sc):
+    return scs2utc_spice(scs, sc)
 
 _POSITION_KIND = {
     None         : lambda x: x,
