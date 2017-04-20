@@ -100,7 +100,7 @@ def xform_spice(xfunc, tais, **kwargs):
 def utc2scs_spice(tais, sc):
     res = {}
     try:
-        scid = sp.bodn2c(sc)
+        scid = sp.bods2c(sc)
         for tai in tais:
             et = sp.unitim(tai, 'tai', 'et')
             obt = sp.sce2s(scid, et)
@@ -115,7 +115,7 @@ def utc2scs_spice(tais, sc):
 def scs2utc_spice(scs, sc):
     res = {}
     try:
-        scid = sp.bodn2c(sc)
+        scid = sp.bods2c(sc)
         et = sp.scs2e(scid, scs)
         utc = sp.et2utc(et, 'isoc', 3)
 
@@ -150,16 +150,14 @@ def wrap_result(res):
     return {'result':res}
 
 def state_internal(func_spice, utc, utc_end, deltat, kind, observer, target, ref, abcorr):
+    try:
+        tgt = sp.bods2c(target)
+        obs = sp.bods2c(observer)
+    except sp.stypes.SpiceyError as ex:
+        raise GeometrySpiceError(ex.value)
+
     if abcorr is None:
         abcorr = 'NONE'
-
-    tgt = sp.bodn2c(target)
-    if tgt is None:
-        raise ValidationError(target)
-    obs = sp.bodn2c(observer)
-    if obs is None:
-        raise ValidationError(observer)
-
     if kind is not None:
         kind = kind.lower()
 
