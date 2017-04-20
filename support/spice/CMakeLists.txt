@@ -11,6 +11,7 @@ aux_source_directory(${SPICE_DIR} SPICE_SRCS)
 add_library(spice SHARED ${SPICE_SUPP_SRCS} ${SPICE_SRCS})
 target_link_libraries(spice m)
 sidc_install_lib(spice)
+set_target_properties(spice PROPERTIES PREFIX "" SUFFIX ".so")
 
 macro(spice_bin dir name)
     set(AUX_SRCS "")
