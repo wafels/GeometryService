@@ -53,7 +53,7 @@ endmacro()
 # using std::streambuf;
 # using std::istream;
 # using std::ostream;
-sidc_install_lib_external(fcgi fcgi.tar.gz 8cc7b738d9da3daa991a7cb8d5399b29)
+sidc_install_lib_external(fcgi fcgi.tar.gz b8c4e986d08fdbeb2c0336a735af2471)
 
 # http://download.lighttpd.net/spawn-fcgi/releases-1.6.x/spawn-fcgi-1.6.4.tar.bz2
 sidc_install_lib_external(spawn-fcgi spawn-fcgi-1.6.4.tar.bz2 bf269849995ab8b3a8989779fa5818aa)
