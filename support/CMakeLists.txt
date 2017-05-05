@@ -6,9 +6,16 @@ set(SIDC_SUPPORT        ${CMAKE_INSTALL_PREFIX}/support)
 set(SIDC_SUPPORT_INC    ${SIDC_SUPPORT}/include)
 set(SIDC_SUPPORT_LIB    ${SIDC_SUPPORT}/lib)
 
-set(BUILD_PYSPICE 1)
+if(MAXIMAL)
 
-add_subdirectory(spice)
+set(GEOMETRY_FCGI_PORT 8080)
+set(GEOMETRY_HTTP_PORT 7789)
+
+configure_file(spawn_geometry_service ${CMAKE_CURRENT_BINARY_DIR}/spawn_geometry_service)
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/spawn_geometry_service DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+configure_file(nginx_geometry.conf ${CMAKE_CURRENT_BINARY_DIR}/nginx_geometry.conf)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/nginx_geometry.conf DESTINATION ${SIDC_INSTALL_SUPPORT}/conf)
 
 include(ExternalProject)
 
@@ -76,4 +83,7 @@ ExternalProject_Add(python
     INSTALL_DIR       ${SIDC_INSTALL_PYTHON}
     INSTALL_COMMAND   make install)
 
+endif(MAXIMAL)
+
+add_subdirectory(spice)
 add_subdirectory(python)
