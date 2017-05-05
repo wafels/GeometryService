@@ -1,0 +1,9 @@
+FROM python:2
+
+RUN echo "deb http://ftp.belnet.be/debian/ testing main" >> /etc/apt/sources.list
+RUN apt-get update && apt-get -y install cmake zlib1g-dev libpcre3-dev libssl-dev
+
+EXPOSE 80
+
+COPY GeometryService /root/GeometryService
+RUN cd /root && mkdir build && cd build && cmake ../GeometryService && make install
