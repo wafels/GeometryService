@@ -1,0 +1,20 @@
+diff -ur -x .git SpiceyPy/setup.py /Users/bogdan/git/SpiceyPy/setup.py
+--- SpiceyPy/setup.py	2017-05-13 22:15:35.000000000 +0200
++++ /Users/bogdan/git/SpiceyPy/setup.py	2017-04-24 21:43:17.000000000 +0200
+@@ -190,7 +190,6 @@
+ 
+ try:
+     # First check for spice
+-    '''
+     check_for_spice()
+ 
+     print("Host OS: {}".format(host_OS))
+@@ -200,7 +199,7 @@
+         windows_method()
+     else:
+         sys.exit("Unsupported OS: {0}".format(host_OS))
+-    '''
++
+     readme = open('README.rst', 'r')
+     readmetext = readme.read()
+     readme.close()
