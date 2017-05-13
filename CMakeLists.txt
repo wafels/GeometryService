@@ -31,7 +31,7 @@ macro(include_before ...)
 endmacro()
 
 set(SUPPORT ${CMAKE_SOURCE_DIR}/support)
-set(SPICE   ${SUPPORT}/spice/cspice-N65)
+set(SPICE   ${SUPPORT}/spice/cspice-N66)
 
 add_subdirectory(support)
 add_subdirectory(data)
