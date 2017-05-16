@@ -9,8 +9,9 @@ from spyne.model.primitive import AnyDict, Integer, Float, String
 
 from spyne.protocol.http import HttpRpc
 from spyne.protocol.json import JsonDocument
+from spyne.protocol.msgpack import MessagePackDocument
 
-from spyne.server.wsgi import WsgiApplication
+from spyne.util.wsgi_wrapper import WsgiMounter
 
 #####
 
@@ -55,9 +56,14 @@ def geometry_service(fcgi=True):
         SolarSystemGeometryService.event_manager.add_listener('method_return_object',
                                                               _on_method_return_object)
 
-    app = Application([SolarSystemGeometryService],
-                      tns='sidc.service.geometry',
-                      in_protocol=HttpRpc(validator='soft'),
-                      out_protocol=JsonDocument())
+    tns = 'sidc.service.geometry'
 
-    return WsgiApplication(app)
+    json = Application([SolarSystemGeometryService], tns=tns,
+                       in_protocol=HttpRpc(validator='soft'),
+                       out_protocol=JsonDocument())
+
+    msgpack = Application([SolarSystemGeometryService], tns=tns,
+                          in_protocol=HttpRpc(validator='soft'),
+                          out_protocol=MessagePackDocument())
+
+    return WsgiMounter({ 'json' : json, 'msgpack' : msgpack })
