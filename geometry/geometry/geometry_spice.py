@@ -10,6 +10,7 @@ def _furnish(directory, kernel):
         sp.furnsh(name)
 
 def spice_init():
+    sp.trcoff();
     _furnish("/geometry/data/generic", "meta.ker")
 
     for r,d,f in os.walk("/geometry/data/kernels"):
