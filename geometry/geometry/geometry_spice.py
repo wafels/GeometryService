@@ -10,6 +10,8 @@ def _furnish(directory, kernel):
         sp.furnsh(name)
 
 def spice_init():
+    sp.erract("set", 10, "return")
+    sp.errdev("set", 10, "null")
     sp.trcoff();
     _furnish("/geometry/data/generic", "meta.ker")
 
