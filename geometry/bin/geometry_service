@@ -4,15 +4,14 @@
 from werkzeug.serving import run_simple
 
 # stop stupid reverse DNS lookup / not sure if still needed
-__import__('BaseHTTPServer').BaseHTTPRequestHandler.address_string = lambda x:x.client_address[0]
+# __import__('BaseHTTPServer').BaseHTTPRequestHandler.address_string = lambda x:x.client_address[0]
 
 from geometry import service
 
 #####
 # http://pylonsbook.com/en/1.1/the-web-server-gateway-interface-wsgi.html#altering-the-response
 
-import gzip
-import StringIO
+import gzip, io
 
 class GzipMiddleware(object):
     def __init__(self, app, compresslevel=9):
@@ -23,7 +22,7 @@ class GzipMiddleware(object):
         if 'gzip' not in environ.get('HTTP_ACCEPT_ENCODING', ''):
             return self.app(environ, start_response)
 
-        buffer = StringIO.StringIO()
+        buffer = io.BytesIO()
         output = gzip.GzipFile(
             mode='wb',
             compresslevel=self.compresslevel,
