@@ -1253,28 +1253,62 @@ def test_dskgd():
         spice.dskgd()
 
 def test_dski02():
-    with pytest.raises(NotImplementedError):
-        spice.dski02()
+    spice.kclear()
+    # open the dsk file
+    handle = spice.dasopr(ExtraKernels.phobosDsk)
+    # get the dladsc from the file
+    dladsc = spice.dlabfs(handle)
+    # Find the number of plates in the model
+    # SPICE_DSK02_KWNP == 2
+    num_plates = spice.dski02(handle, dladsc, 2, 0, 3)
+    assert len(num_plates) > 0
+    spice.dascls(handle)
+    spice.kclear()
 
 def test_dskmi2():
     with pytest.raises(NotImplementedError):
         spice.dskmi2()
 
 def test_dskn02():
-    with pytest.raises(NotImplementedError):
-        spice.dskn02()
+    spice.kclear()
+    # open the dsk file
+    handle = spice.dasopr(ExtraKernels.phobosDsk)
+    # get the dladsc from the file
+    dladsc = spice.dlabfs(handle)
+    # get the normal vector for first plate
+    normal = spice.dskn02(handle, dladsc, 1)
+    npt.assert_almost_equal(normal, [-0.04224318, 0.26363624, -0.96369676])
+    spice.dascls(handle)
+    spice.kclear()
 
 def test_dskp02():
-    with pytest.raises(NotImplementedError):
-        spice.dskp02()
+    spice.kclear()
+    # open the dsk file
+    handle = spice.dasopr(ExtraKernels.phobosDsk)
+    # get the dladsc from the file
+    dladsc = spice.dlabfs(handle)
+    # get the first plate
+    plates = spice.dskp02(handle, dladsc, 1, 2)
+    npt.assert_almost_equal(plates[0], [1, 2, 3])
+    npt.assert_almost_equal(plates[1], [1, 3, 4])
+    spice.dascls(handle)
+    spice.kclear()
 
 def test_dskrb2():
     with pytest.raises(NotImplementedError):
         spice.dskrb2()
 
 def test_dskv02():
-    with pytest.raises(NotImplementedError):
-        spice.dskv02()
+    spice.kclear()
+    # open the dsk file
+    handle = spice.dasopr(ExtraKernels.phobosDsk)
+    # get the dladsc from the file
+    dladsc = spice.dlabfs(handle)
+    # read the vertices
+    vrtces = spice.dskv02(handle, dladsc, 1, 1)
+    npt.assert_almost_equal(vrtces[0], [0.07271853, 0.0,  -8.3327179])
+    spice.dascls(handle)
+    spice.kclear()
 
 def test_dskw02():
     with pytest.raises(NotImplementedError):
@@ -1293,8 +1327,17 @@ def test_dskxv():
         spice.dskxv()
 
 def test_dskz02():
-    with pytest.raises(NotImplementedError):
-        spice.dskz02()
+    spice.kclear()
+    # open the dsk file
+    handle = spice.dasopr(ExtraKernels.phobosDsk)
+    # get the dladsc from the file
+    dladsc = spice.dlabfs(handle)
+    # get vertex and plate counts
+    nv, nplates = spice.dskz02(handle, dladsc)
+    assert nv > 0
+    assert nplates > 0
+    spice.dascls(handle)
+    spice.kclear()
 
 def test_dsphdr():
     output = spice.dsphdr(-1.0, 0.0, 0.0)
@@ -5071,6 +5114,19 @@ def test_spkezr():
     npt.assert_array_almost_equal(state, expected_state)
     spice.kclear()
 
+def test_spkezr_vectorized():
+    spice.kclear()
+    spice.furnsh(CoreKernels.testMetaKernel)
+    et = np.full((100,), spice.str2et('July 4, 2003 11:00 AM PST'))
+    state, lt = spice.spkezr("Mars", et, "J2000", "LT+S", "Earth")
+    expected_lt = np.full((100,), 269.6898816177049)
+    expected_state = np.full((100, 6), [73822235.33116072, -27127919.178592984,
+                                        -18741306.284863796,
+                                        -6.808513317178952, 7.513996167680786,
+                                        3.001298515816776])
+    npt.assert_allclose(lt, expected_lt)
+    npt.assert_allclose(state, expected_state)
+    spice.kclear()
 
 def test_spkgeo():
     spice.kclear()
