@@ -74,8 +74,9 @@ class SpiceyError(Exception):
     SpiceyError wraps CSPICE errors.
     :type value: str
     """
-    def __init__(self, value):
+    def __init__(self, value, found=None):
         self.value = value
+        self.found = found
 
     def __str__(self):
         return self.value
@@ -109,11 +110,7 @@ def toPythonString(inString):
     elif six.PY3:
         if isinstance(inString, c_char_p):
             return toPythonString(inString.value)
-        return bytes.decode(string_at(inString)).rstrip()
-
-
-def charvector(ndim=1, lenvals=10):
-    return ((c_char * lenvals) * ndim)()
+        return bytes.decode(string_at(inString), errors="ignore").rstrip()
 
 
 def emptyCharArray(xLen=None, yLen=None):
@@ -150,6 +147,7 @@ def emptyIntMatrix(x=3, y=3):
         y = y.value
     return ((c_int * x) * y)()
 
+
 def emptyIntVector(n):
     if isinstance(n, c_int):
         n = n.value
@@ -157,7 +155,19 @@ def emptyIntVector(n):
     return (c_int * n)()
 
 
-def vectorToList(x):
+def emptyBoolVector(n):
+    if isinstance(n, c_int):
+        n = n.value
+    return (c_bool * n)()
+
+
+def cVectorToPython(x):
+    """
+    Convert the c vector data into the correct python data type
+    (numpy arrays or strings)
+    :param x:
+    :return:
+    """
     if isinstance(x[0], bool):
         return numpy.fromiter(x, numpy.bool, count=len(x))
     elif isinstance(x[0], int):
@@ -403,7 +413,7 @@ class Plane(Structure):
 
     @property
     def normal(self):
-        return vectorToList(self._normal)
+        return cVectorToPython(self._normal)
 
     @property
     def constant(self):
@@ -422,15 +432,15 @@ class Ellipse(Structure):
 
     @property
     def center(self):
-        return vectorToList(self._center)
+        return cVectorToPython(self._center)
 
     @property
     def semi_major(self):
-        return vectorToList(self._semi_major)
+        return cVectorToPython(self._semi_major)
 
     @property
     def semi_minor(self):
-        return vectorToList(self._semi_minor)
+        return cVectorToPython(self._semi_minor)
 
     def __str__(self):
         return '<SpiceEllipse: center = %s, semi_major = %s, semi_minor = %s>' % \
@@ -453,59 +463,191 @@ class DataType(object):
         pass
 
 
+class SpiceDSKDescr(Structure):
+    _fields_ = [
+        ('_surfce', c_int),
+        ('_center', c_int),
+        ('_dclass', c_int),
+        ('_dtype', c_int),
+        ('_frmcde', c_int),
+        ('_corsys', c_int),
+        ('_corpar', c_double * 10),
+        ('_co1min', c_double),
+        ('_co1max', c_double),
+        ('_co2min', c_double),
+        ('_co2max', c_double),
+        ('_co3min', c_double),
+        ('_co3max', c_double),
+        ('_start', c_double),
+        ('_stop', c_double),
+    ]
+    @property
+    def surfce(self):
+        return self._surfce
+
+    @property
+    def center(self):
+        return self._center
+
+    @property
+    def dclass(self):
+        return self._dclass
+
+    @property
+    def dtype(self):
+        return self._dtype
+
+    @property
+    def frmcde(self):
+        return self._frmcde
+
+    @property
+    def corsys(self):
+        return self._corsys
+
+    @property
+    def corpar(self):
+        return cVectorToPython(self._corpar)
+
+    @property
+    def co1min(self):
+        return self._co1min
+
+    @property
+    def co1max(self):
+        return self._co1max
+
+    @property
+    def co2min(self):
+        return self._co2min
+
+    @property
+    def co2max(self):
+        return self._co2max
+
+    @property
+    def co3min(self):
+        return self._co3min
+
+    @property
+    def co3max(self):
+        return self._co3max
+
+    @property
+    def start(self):
+        return self._start
+
+    @property
+    def stop(self):
+        return self._stop
+
+
 class SpiceDLADescr(Structure):
     _fields_ = [
-        ('bwdptr', c_int),
-        ('fwdptr', c_int),
-        ('ibase', c_int),
-        ('isize', c_int),
-        ('dbase', c_int),
-        ('dsize', c_int),
-        ('cbase', c_int),
-        ('csize', c_int)
+        ('_bwdptr', c_int),
+        ('_fwdptr', c_int),
+        ('_ibase', c_int),
+        ('_isize', c_int),
+        ('_dbase', c_int),
+        ('_dsize', c_int),
+        ('_cbase', c_int),
+        ('_csize', c_int)
     ]
+    @property
     def bwdptr(self):
-        return self._bwdptr.value
+        return self._bwdptr
 
+    @property
     def fwdptr(self):
-        return self._fwdprt.value
+        return self._fwdptr
 
+    @property
     def ibase(self):
-        return self._ibase.value
+        return self._ibase
 
+    @property
     def isize(self):
-        return self._isize.value
+        return self._isize
 
+    @property
     def dbase(self):
-        return self._dbase.value
+        return self._dbase
 
+    @property
     def dsize(self):
-        return self._dsize.value
+        return self._dsize
 
+    @property
     def cbase(self):
-        return self._cbase.value
+        return self._cbase
 
+    @property
     def csize(self):
-        return self._csize.value
-
+        return self._csize
 
 
 class SpiceEKDataType(c_int):
+    _SPICE_CHR = c_int(0)
+    _SPICE_DP  = c_int(1)
+    _SPICE_INT = c_int(2)
+    _SPICE_TIME = c_int(3)
+    _SPICE_BOOL = c_int(4)
+
+
     _fields_ = [
-        ('SPICE_CHR', c_int(0)),
-        ('SPICE_DP', c_int(1)),
-        ('SPICE_INT', c_int(2)),
-        ('SPICE_TIME', c_int(3)),
-        ('SPICE_BOOL', c_int(4)),
+        ('SPICE_CHR', _SPICE_CHR),
+        ('SPICE_DP', _SPICE_DP),
+        ('SPICE_INT', _SPICE_INT),
+        ('SPICE_TIME', _SPICE_TIME),
+        ('SPICE_BOOL', _SPICE_BOOL),
     ]
+
+    SPICE_CHR =  _SPICE_CHR.value
+    SPICE_DP  =  _SPICE_DP.value
+    SPICE_INT =  _SPICE_INT.value
+    SPICE_TIME = _SPICE_TIME.value
+    SPICE_BOOL = _SPICE_BOOL.value
+
+
+def emptySpiceEKDataTypeVector(n):
+    if isinstance(n, c_int):
+        n = n.value
+    assert(isinstance(n, int))
+    return (SpiceEKDataType * n)()
 
 
 class SpiceEKExprClass(c_int):
+    _SPICE_EK_EXP_COL = c_int(0)
+    _SPICE_EK_EXP_FUNC = c_int(1)
+    _SPICE_EK_EXP_EXPR = c_int(2)
+
     _fields_ = [
-        ('SPICE_EK_EXP_COL', c_int(0)),
-        ('SPICE_EK_EXP_FUNC', c_int(1)),
-        ('SPICE_EK_EXP_EXPR', c_int(2))
+        ('SPICE_EK_EXP_COL',  _SPICE_EK_EXP_COL),
+        ('SPICE_EK_EXP_FUNC', _SPICE_EK_EXP_FUNC),
+        ('SPICE_EK_EXP_EXPR', _SPICE_EK_EXP_EXPR)
     ]
+
+    SPICE_EK_EXP_COL = _SPICE_EK_EXP_COL.value
+    SPICE_EK_EXP_FUNC = _SPICE_EK_EXP_FUNC.value
+    SPICE_EK_EXP_EXPR = _SPICE_EK_EXP_EXPR.value
+
+
+class SpiceSPK18Subtype(c_int):
+    _S18TP0 = c_int(0)
+    _S18TP1 = c_int(1)
+    S18TP0  = _S18TP0.value
+    S18TP1  = _S18TP1.value
+    _fields_ = [
+        ('S18TP0', _S18TP0),
+        ('S18TP1', _S18TP1)
+    ]
+
+
+def emptySpiceEKExprClassVector(n):
+    if isinstance(n, c_int):
+        n = n.value
+    assert(isinstance(n, int))
+    return (SpiceEKExprClass * n)()
 
 
 class SpiceEKAttDsc(Structure):
@@ -570,7 +712,7 @@ class SpiceEKSegSum(Structure):
 
     @property
     def cnames(self):
-        return vectorToList(self._cnames)[0:self.ncols]
+        return cVectorToPython(self._cnames)[0:self.ncols]
 
     @property
     def cdescrs(self):
@@ -584,7 +726,7 @@ class SpiceEKSegSum(Structure):
 # and modified as needed for this author, maybe we should work together?
 
 ### helper classes/functions ###
-BITSIZE = {'char': sizeof(c_char), 'int': sizeof(c_int), 'double': sizeof(c_double)}
+BITSIZE = {'char': sizeof(c_char), 'int': sizeof(c_int), 'double': sizeof(c_double), 'bool': sizeof(c_int), 'time': sizeof(c_int)}
 
 
 def _char_getter(data_p, index, length):
@@ -609,6 +751,12 @@ def SPICEINT_CELL(size):
 
 def SPICECHAR_CELL(size, length):
     return SpiceCell.character(size, length)
+
+def SPICEBOOL_CELL(size):
+    return SpiceCell.bool(size)
+
+def SPICETIME_CELL(size):
+    return SpiceCell.time(size)
 
 
 class SpiceCell(Structure):
@@ -692,6 +840,26 @@ class SpiceCell(Structure):
         data = (c_double * size).from_buffer(
             base, cls.CTRLBLOCK * BITSIZE['double'])
         instance = cls(cls.DATATYPES_ENUM['double'], 0, size, 0, 1,
+                       cast(base, c_void_p),
+                       cast(data, c_void_p))
+        return instance
+
+    @classmethod
+    def bool(cls, size):
+        base = (c_int * (cls.CTRLBLOCK + size))()
+        data = (c_int * size).from_buffer(
+            base, cls.CTRLBLOCK * BITSIZE['bool'])
+        instance = cls(cls.DATATYPES_ENUM['bool'], 0, size, 0, 1,
+                       cast(base, c_void_p),
+                       cast(data, c_void_p))
+        return instance
+
+    @classmethod
+    def time(cls, size):
+        base = (c_int * (cls.CTRLBLOCK + size))()
+        data = (c_int * size).from_buffer(
+            base, cls.CTRLBLOCK * BITSIZE['time'])
+        instance = cls(cls.DATATYPES_ENUM['time'], 0, size, 0, 1,
                        cast(base, c_void_p),
                        cast(data, c_void_p))
         return instance

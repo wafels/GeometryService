@@ -179,3 +179,40 @@ def test_toIntMatrix():
         stypes.toIntMatrix("ABCD")
     with pytest.raises(TypeError):
         stypes.toIntMatrix([[1.0, 2.0], [3.0, 4.0]])
+
+
+def test_to_improve_coverage():
+    # SpiceyError().__str__()
+    xsept = spice.stypes.SpiceyError('abc')
+    assert str(xsept) == 'abc'
+    # stypes.emptyCharArray when missing keyword arguments
+    eca = stypes.emptyCharArray()
+    # stypes.emptyDoubleMatrix and stypes.emptyIntMatrix when x is c_int
+    edm = stypes.emptyDoubleMatrix(x=ctypes.c_int(4))
+    eim = stypes.emptyIntMatrix(x=ctypes.c_int(4))
+    # stypes.*MatrixType().from_param(param) when isinstance(param,Array)
+    for stmt,typ in zip((stypes.DoubleMatrixType(), stypes.IntMatrixType(),),
+                        (float, int,)):
+        madeFromList = stmt.from_param([[typ(1),typ(2),typ(3)],[typ(6),typ(4),typ(0)]])
+        assert madeFromList is stmt.from_param(madeFromList)
+    # DataType.__init__()
+    assert stypes.DataType()
+    # SpiceDLADescr methods
+    stsdlad = stypes.SpiceDLADescr()
+    assert isinstance(stsdlad.bwdptr, int)
+    assert isinstance(stsdlad.fwdptr, int)
+    assert isinstance(stsdlad.ibase, int)
+    assert isinstance(stsdlad.isize, int)
+    assert isinstance(stsdlad.dbase, int)
+    assert isinstance(stsdlad.cbase, int)
+    assert isinstance(stsdlad.csize, int)
+    # __str__ methods in multiple classes
+    for obj in (stypes.SpiceEKAttDsc(), stypes.SpiceEKSegSum(), stypes.emptySpiceEKExprClassVector(1),
+                stypes.emptySpiceEKDataTypeVector(1), stypes.emptySpiceEKExprClassVector(ctypes.c_int(1)), stypes.emptySpiceEKDataTypeVector(ctypes.c_int(1))):
+        assert type(obj.__str__()) is str
+    # SpiceCell methods:  .is_time; .is_bool; .reset.
+    stsct = stypes.SPICETIME_CELL(10)
+    assert stsct.is_time()
+    stscb = stypes.SPICEBOOL_CELL(10)
+    assert stscb.is_bool()
+    assert stscb.reset() is None

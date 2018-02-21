@@ -4,9 +4,29 @@ All notable changes to SpiceyPy will be documented here
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project tries to adhere to [Semantic Versioning](http://semver.org/).
 
-## [2.0.1] - UNRELEASED
+## [2.1.0] - 2017-11-09
+### Added
+- Completed wrapping of all new N66 DSK functions
+- 3.6 classifier
+- context manager for turning on/off found flag catches
+- contributor guide
+- freebsd support
+- added tests for dozens of functions, wrapped almost all remaining functions
+
 ### Fixed
 - added six and numpy to setup_requires setup.py kwargs
+- bugs in some tests
+
+### Changed
+- changed naming of vectorToList to cVectorToPython
+- Updated getspice module to use urllib3 for OpenSSL library versions older
+  than OpenSSL 1.0.1g.
+- getspice module provides now a class that handles the downloading and
+  unpacking of N066 CSPICE distribution.
+- Updated setup to pack the CSPICE installation code into a class that
+  extends the setuptools.command.install command.
+- made vectorized functions more consistent
+- changed tests to point to smaller kernel set hosted on github
 
 ## [2.0.0] - 2017-06-09
 ### Added

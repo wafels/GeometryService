@@ -1,20 +1,20 @@
 diff -ur -x .git SpiceyPy/setup.py /Users/bogdan/git/SpiceyPy/setup.py
---- SpiceyPy/setup.py	2017-08-16 17:04:35.000000000 +0200
-+++ /Users/bogdan/git/SpiceyPy/setup.py	2017-07-04 14:53:04.000000000 +0200
-@@ -194,7 +194,6 @@
+--- SpiceyPy/setup.py	2018-02-21 17:14:14.000000000 +0100
++++ /Users/bogdan/git/SpiceyPy/setup.py	2017-11-09 23:31:18.000000000 +0100
+@@ -81,7 +81,6 @@
+     """
  
- try:
-     # First check for spice
--    '''
-     check_for_spice()
+     def run(self):
+-        '''
+         self.check_for_spice()
  
-     print("Host OS: {}".format(host_OS))
-@@ -204,7 +203,7 @@
-         windows_method()
-     else:
-         sys.exit("Unsupported OS: {0}".format(host_OS))
--    '''
+         print("Host OS: {0}".format(host_OS))
+@@ -91,7 +90,7 @@
+             self.windows_method()
+         else:
+             sys.exit("Unsupported OS: {0}".format(host_OS))
+-        '''
 +
-     readme = open('README.rst', 'r')
-     readmetext = readme.read()
-     readme.close()
+         install.run(self)
+ 
+     @staticmethod
