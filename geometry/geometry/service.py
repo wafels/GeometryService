@@ -52,6 +52,7 @@ def geometry_service(fcgi=True):
     if fcgi is False:
         def _on_method_return_object(ctx):
             ctx.transport.resp_headers['Access-Control-Allow-Origin'] = "*"
+            ctx.transport.resp_headers['Cache-Control'] = "public,max-age=86400" # tbd
 
         SolarSystemGeometryService.event_manager.add_listener('method_return_object',
                                                               _on_method_return_object)
