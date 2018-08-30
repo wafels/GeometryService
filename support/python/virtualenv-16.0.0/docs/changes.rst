@@ -1,6 +1,28 @@
 Release History
 ===============
 
+16.0.0 (2018-05-16)
+-------------------
+
+* Drop support for Python 2.6.
+
+* Upgrade pip to 10.0.1.
+
+* Upgrade setuptools to 39.1.0.
+
+* Upgrade wheel to 0.31.1.
+
+
+15.2.0 (2018-03-21)
+-------------------
+
+* Upgrade setuptools to 39.0.1.
+
+* Upgrade pip to 9.0.3.
+
+* Upgrade wheel to 0.30.0.
+
+
 15.1.0 (2016-11-15)
 -------------------
 

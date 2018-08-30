@@ -39,7 +39,6 @@ virtualenv_embedded/distutils.cfg
 virtualenv_embedded/python-config
 virtualenv_embedded/site.py
 virtualenv_support/__init__.py
-virtualenv_support/argparse-1.4.0-py2.py3-none-any.whl
-virtualenv_support/pip-9.0.1-py2.py3-none-any.whl
-virtualenv_support/setuptools-28.8.0-py2.py3-none-any.whl
-virtualenv_support/wheel-0.29.0-py2.py3-none-any.whl
+virtualenv_support/pip-10.0.1-py2.py3-none-any.whl
+virtualenv_support/setuptools-39.1.0-py2.py3-none-any.whl
+virtualenv_support/wheel-0.31.1-py2.py3-none-any.whl
