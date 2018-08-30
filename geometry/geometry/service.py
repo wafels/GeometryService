@@ -1,6 +1,6 @@
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 from spyne.application import Application
 from spyne.decorator import rpc
