@@ -60,4 +60,4 @@ class GzipMiddleware(object):
 #####
 
 gzip_app = GzipMiddleware(service.geometry_service(False), compresslevel=1)
-run_simple('0.0.0.0', 7789, gzip_app, threaded=True)
+run_simple('0.0.0.0', 7789, gzip_app, threaded=False)
