@@ -66,4 +66,4 @@ def geometry_service(fcgi=True):
                           in_protocol=HttpRpc(validator='soft'),
                           out_protocol=MessagePackDocument())
 
-    return WsgiMounter({ 'json' : json, 'msgpack' : msgpack })
+    return WsgiMounter({'json': json, 'msgpack': msgpack})
