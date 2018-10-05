@@ -24,7 +24,7 @@ sp.stypes.errorformat = "{long}"
 
 class GeometrySpiceError(Fault):
     __type_name__ = 'SpiceError'
-    __namespace__ = 'sidc.service.geometry'
+    __namespace__ = 'swhv.service.geometry'
 
     def __init__(self, message):
         Fault.__init__(self,

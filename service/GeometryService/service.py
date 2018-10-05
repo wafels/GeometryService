@@ -57,7 +57,7 @@ def geometry_service(fcgi=True):
         GeometryService.event_manager.add_listener('method_return_object',
                                                    _on_method_return_object)
 
-    tns = 'sidc.service.geometry'
+    tns = 'swhv.service.geometry'
 
     json = Application([GeometryService], tns=tns,
                        in_protocol=HttpRpc(validator='soft'),
