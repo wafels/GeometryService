@@ -38,6 +38,6 @@ add_subdirectory(data)
 
 install(CODE "execute_process(
     COMMAND /bin/sh -c \"
-            cp -fpR ${CMAKE_CURRENT_SOURCE_DIR}/geometry ${CMAKE_CURRENT_BINARY_DIR} &&
-            ${PIPI} ${CMAKE_CURRENT_BINARY_DIR}/geometry
+            cp -fpR ${CMAKE_CURRENT_SOURCE_DIR}/service ${CMAKE_CURRENT_BINARY_DIR} &&
+            ${PIPI} ${CMAKE_CURRENT_BINARY_DIR}/service
     \")")
