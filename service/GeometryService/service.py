@@ -3,7 +3,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 from spyne.application import Application
-from spyne.decorator import rpc
+from spyne.decorator import srpc
 from spyne.service import Service
 from spyne.model.primitive import AnyDict, Integer, Float, Unicode
 
@@ -18,33 +18,33 @@ from spyne.util.wsgi_wrapper import WsgiMounter
 from . import geometry
 
 class GeometryService(Service):
-    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
-         Unicode(min_occurs=0), Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
-         _returns=AnyDict, _throws=geometry.GeometrySpiceError)
-    def position(ctx, utc, observer, target, ref, abcorr, kind, utc_end, deltat):
+    @srpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
+          Unicode(min_occurs=0), Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
+          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
+    def position(utc, observer, target, ref, abcorr, kind, utc_end, deltat):
         return geometry.position(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
 
-    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
-         Unicode(min_occurs=0), Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
-         _returns=AnyDict, _throws=geometry.GeometrySpiceError)
-    def state(ctx, utc, observer, target, ref, abcorr, kind, utc_end, deltat):
+    @srpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
+          Unicode(min_occurs=0), Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
+          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
+    def state(utc, observer, target, ref, abcorr, kind, utc_end, deltat):
         return geometry.state(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
 
-    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
-         Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
-        _returns=AnyDict, _throws=geometry.GeometrySpiceError)
-    def transform(ctx, utc, from_ref, to_ref, kind, utc_end, deltat):
+    @srpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
+          Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
+          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
+    def transform(utc, from_ref, to_ref, kind, utc_end, deltat):
         return geometry.xform(utc, utc_end, deltat, kind, from_ref, to_ref)
 
-    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1),
-         Unicode(min_occurs=0), Float(min_occurs=0),
-        _returns=AnyDict, _throws=geometry.GeometrySpiceError)
-    def utc2scs(ctx, utc, sc, utc_end, deltat):
+    @srpc(Unicode(min_occurs=1), Unicode(min_occurs=1),
+          Unicode(min_occurs=0), Float(min_occurs=0),
+          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
+    def utc2scs(utc, sc, utc_end, deltat):
         return geometry.utc2scs(utc, utc_end, deltat, sc)
 
-    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1),
-        _returns=AnyDict, _throws=geometry.GeometrySpiceError)
-    def scs2utc(ctx, scs, sc):
+    @srpc(Unicode(min_occurs=1), Unicode(min_occurs=1),
+          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
+    def scs2utc(scs, sc):
         return geometry.scs2utc(scs, sc)
 
 #####
