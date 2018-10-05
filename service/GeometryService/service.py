@@ -18,30 +18,31 @@ from spyne.util.wsgi_wrapper import WsgiMounter
 from . import geometry
 
 class GeometryService(Service):
-    @rpc(Unicode, Unicode, Unicode, Unicode,
+    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
          Unicode(min_occurs=0), Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def position(ctx, utc, observer, target, ref, abcorr, kind, utc_end, deltat):
         return geometry.position(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
 
-    @rpc(Unicode, Unicode, Unicode, Unicode,
+    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
          Unicode(min_occurs=0), Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def state(ctx, utc, observer, target, ref, abcorr, kind, utc_end, deltat):
         return geometry.state(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
 
-    @rpc(Unicode, Unicode, Unicode,
+    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
         Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
         _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def transform(ctx, utc, from_ref, to_ref, kind, utc_end, deltat):
         return geometry.xform(utc, utc_end, deltat, kind, from_ref, to_ref)
 
-    @rpc(Unicode, Unicode, Unicode(min_occurs=0), Float(min_occurs=0),
+    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1),
+         Unicode(min_occurs=0), Float(min_occurs=0),
         _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def utc2scs(ctx, utc, sc, utc_end, deltat):
         return geometry.utc2scs(utc, utc_end, deltat, sc)
 
-    @rpc(Unicode, Unicode,
+    @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1),
         _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def scs2utc(ctx, scs, sc):
         return geometry.scs2utc(scs, sc)
