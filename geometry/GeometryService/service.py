@@ -17,7 +17,7 @@ from spyne.util.wsgi_wrapper import WsgiMounter
 
 from . import geometry
 
-class SolarSystemGeometryService(Service):
+class GeometryService(Service):
     @rpc(Unicode, Unicode, Unicode, Unicode,
          Unicode(min_occurs=0), Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
          _returns=AnyDict, _throws=geometry.GeometrySpiceError)
@@ -54,16 +54,16 @@ def geometry_service(fcgi=True):
             ctx.transport.resp_headers['Access-Control-Allow-Origin'] = "*"
             ctx.transport.resp_headers['Cache-Control'] = "public,max-age=86400" # tbd
 
-        SolarSystemGeometryService.event_manager.add_listener('method_return_object',
-                                                              _on_method_return_object)
+        GeometryService.event_manager.add_listener('method_return_object',
+                                                   _on_method_return_object)
 
     tns = 'sidc.service.geometry'
 
-    json = Application([SolarSystemGeometryService], tns=tns,
+    json = Application([GeometryService], tns=tns,
                        in_protocol=HttpRpc(validator='soft'),
                        out_protocol=JsonDocument())
 
-    msgpack = Application([SolarSystemGeometryService], tns=tns,
+    msgpack = Application([GeometryService], tns=tns,
                           in_protocol=HttpRpc(validator='soft'),
                           out_protocol=MessagePackDocument())
 

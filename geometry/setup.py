@@ -1,12 +1,12 @@
 from setuptools import setup
 
-kwargs = {'name': 'geometry',
+kwargs = {'name': 'GeometryService',
           'description': 'Solar System Geometry Service',
           'long_description': open('README.md').read(),
           'author': 'SWHV ROB',
           'author_email': 'swhv@oma.be',
           'url': 'https://github.com/Helioviewer-Project/GeometryService',
-          'packages': ['geometry'],
+          'packages': ['GeometryService'],
           'scripts': ['bin/geometry_service', 'bin/geometry_service.fcgi'],
           'license': 'MIT'}
 

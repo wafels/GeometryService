@@ -9,7 +9,7 @@ from werkzeug.serving import run_simple
 # stop stupid reverse DNS lookup / not sure if still needed
 # __import__('BaseHTTPServer').BaseHTTPRequestHandler.address_string = lambda x:x.client_address[0]
 
-from geometry import service
+from GeometryService import service
 
 #####
 # http://pylonsbook.com/en/1.1/the-web-server-gateway-interface-wsgi.html#altering-the-response
