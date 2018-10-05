@@ -10,7 +10,7 @@ kwargs = {'name': 'GeometryService',
           'scripts': ['bin/geometry_service', 'bin/geometry_service.fcgi'],
           'license': 'MIT'}
 
-instllrqrs = ['dill', 'lxml', 'msgpack-python', 'spyne>=2.13.2-alpha', 'sortedcontainers', 'flup6', 'Werkzeug']
+instllrqrs = ['dill', 'lxml', 'simplejson', 'msgpack-python', 'spyne>=2.13.2-alpha', 'sortedcontainers', 'flup6', 'Werkzeug']
 kwargs['install_requires'] = instllrqrs
 
 clssfrs = ["Programming Language :: Python",
