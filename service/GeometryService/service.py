@@ -31,7 +31,7 @@ class GeometryService(Service):
         return geometry.state(utc, utc_end, deltat, kind, observer, target, ref, abcorr)
 
     @rpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Unicode(min_occurs=1),
-        Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
+         Unicode(min_occurs=0), Unicode(min_occurs=0), Float(min_occurs=0),
         _returns=AnyDict, _throws=geometry.GeometrySpiceError)
     def transform(ctx, utc, from_ref, to_ref, kind, utc_end, deltat):
         return geometry.xform(utc, utc_end, deltat, kind, from_ref, to_ref)
@@ -58,13 +58,11 @@ def geometry_service(fcgi=True):
         GeometryService.event_manager.add_listener('method_return_object',
                                                    _on_method_return_object)
 
-    tns = 'swhv.service.geometry'
-
-    json = Application([GeometryService], tns=tns,
+    json = Application([GeometryService], tns='swhv.service.geometry.json',
                        in_protocol=HttpRpc(validator='soft'),
                        out_protocol=JsonDocument())
 
-    msgpack = Application([GeometryService], tns=tns,
+    msgpack = Application([GeometryService], tns='swhv.service.geometry.msgpack',
                           in_protocol=HttpRpc(validator='soft'),
                           out_protocol=MessagePackDocument())
 
