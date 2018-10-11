@@ -1,6 +1,6 @@
 # Solar System Geometry Service
 
-RPC for geometry computations based on [SPICE](https://naif.jpl.nasa.gov/naif/) and [Spyne](http://spyne.io/). Returns either JSON or [MessagePack](https://msgpack.org) encoded responses.
+RPC server for geometry computations based on [SPICE Toolkit](https://naif.jpl.nasa.gov/naif/), [SpiceyPy](https://github.com/AndrewAnnex/SpiceyPy/), and [Spyne](http://spyne.io/). Returns either JSON or [MessagePack](https://msgpack.org) encoded responses.
 
 ## Functions
 

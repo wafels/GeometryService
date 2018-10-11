@@ -1,7 +1,7 @@
 """
 The MIT License (MIT)
 
-Copyright (c) [2015-2017] [Andrew Annex]
+Copyright (c) [2015-2018] [Andrew Annex]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -100,21 +100,6 @@ def test_SpiceCellSliceInts():
     assert testCell[::-1] == testVals[::-1]
     assert testCell[::-2] == testVals[::-2]
     assert testCell[2:-1] == testVals[2:-1]
-
-
-def test_toBoolVector():
-    madeFromList = stypes.toBoolVector([False, True, False])
-    assert len(madeFromList) == 3
-    madeFromTuple = stypes.toBoolVector((False, True, False))
-    assert len(madeFromTuple) == 3
-    madeFromNumpyArray = stypes.toBoolVector(np.ones((3, 1), dtype=bool))
-    assert len(madeFromNumpyArray) == 3
-    TestArray3 = ctypes.c_bool * 3
-    madeFromCtypesArray = stypes.toBoolVector(TestArray3(False, True, False))
-    assert len(madeFromCtypesArray) == 3
-    with pytest.raises(TypeError):
-        stypes.toBoolVector("ABCD")
-    spice.kclear()
 
 
 def test_toDoubleVector():

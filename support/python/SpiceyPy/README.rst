@@ -34,14 +34,35 @@ science field for Solar System Geometry. Please visit the NAIF website for more 
 *IMPORTANT*: I have no current affiliation with NASA, NAIF, or JPL. The
 code is provided "as is", use at your own risk.
 
+Citing SpiceyPy
+---------------
+
+If you are publishing work that uses SpiceyPy, please cite
+SpiceyPy and the SPICE toolkit. The citation information
+for SPICE can be found on the NAIF website. To cite SpiceyPy please
+utilize the zenodo DOI badge at the top of this readme. To cite information 
+about SpiceyPy, usership, and how it works please cite my 2017 abstract, available with citation info at : `<https://ui.adsabs.harvard.edu/#abs/2017LPICo1986.7081A>`__.
+
 Installation
 ------------
 
-First install the dependencies (numpy, six, pytest) for the project. Then
-run ``pip install spiceypy`` to install from pypi.
++----------------+-------------------+
+| PyPI           | Conda Forge       |
++================+===================+
+| |PyPI|         | |Conda Version|   |
++----------------+-------------------+
 
-SpiceyPy is also available through conda by either first installing pip via conda or by running
-``conda install -c https://conda.anaconda.org/andrewannex spiceypy``.
+.. |PyPI| image:: https://img.shields.io/pypi/v/spiceypy.svg
+   :target: https://pypi.org/project/spiceypy/
+.. |Conda Version| image:: https://img.shields.io/conda/vn/conda-forge/spiceypy.svg
+   :target: https://anaconda.org/conda-forge/spiceypy
+
+SpiceyPy can be installed using pip by running:
+``pip install spiceypy``
+
+Anaconda users should use the conda-forge distribution of SpiceyPy by running:
+``conda config --add channels conda-forge``
+``conda install spiceypy``
 
 If you wish to install spiceypy from source first download or clone the project. Then run ``python setup.py install``.
 To uninstall run ``pip uninstall spiceypy``.
@@ -64,14 +85,6 @@ Feedback is always welcomed, if you discover that a function is not working as e
 submit an issue detailing how to reproduce the problem. If you utilize SpiceyPy frequently 
 please consider contributing to the project by citing me using the zenodo DOI above.
 
-Citing SpiceyPy
----------------
-
-If the use of SpiceyPy is used in a publication, please consider
-citing SpiceyPy and the SPICE toolkit. The citation information
-for SPICE can be found on the NAIF website. To cite SpiceyPy please
-utilize the zenodo DOI badge at the top of this readme.
-
 Known Working Environments:
 ---------------------------
 
@@ -83,8 +96,8 @@ Please note that support for Python minor versions are generally phased out
 as newer versions are released. 
 
 - OS: OS X, Linux, Windows
-- CPU: 64bit & 32bit
-- Python 2.7, 3.3, 3.4, 3.5, 3.6
+- CPU: 64bit only!
+- Python 2.7, 3.3, 3.4, 3.5, 3.6, 3.7
 
 Acknowledgements
 ----------------

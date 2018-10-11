@@ -1,7 +1,7 @@
 """
 The MIT License (MIT)
 
-Copyright (c) [2015-2017] [Andrew Annex]
+Copyright (c) [2015-2018] [Andrew Annex]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -787,7 +787,7 @@ def test_cvpool():
     assert value[0] == 565.0
     spice.clpool()
     spice.kclear()
-    assert updated
+    assert updated is True
 
 
 def test_cyllat():
@@ -1820,6 +1820,63 @@ def test_dskxv():
     npt.assert_almost_equal(xpt[0], [12.36679999999999957083, 0.0, 0.0])
     spice.kclear()
 
+def test_dskxv_2():
+    spice.kclear()
+    # load kernels
+    spice.furnsh(ExtraKernels.phobosDsk)
+    # get handle
+    dsk1, filtyp, source, handle = spice.kdata(0, "DSK", 256, 5, 256)
+    # get the dladsc from the file
+    dladsc = spice.dlabfs(handle)
+    # get dskdsc for target radius
+    dskdsc = spice.dskgd(handle, dladsc)
+    target = spice.bodc2n(dskdsc.center)
+    fixref = spice.frmnam(dskdsc.frmcde)
+    r = 1.0e10
+    polmrg = 0.5
+    latstp = 1.0
+    lonstp = 2.0
+
+    nhits = 0
+    nderr = 0
+
+    lon = -180.0
+    lat = 90.0
+    nlstep = 0
+    nrays = 0
+    verticies = []
+    raydirs = []
+
+    while lon < 180.0:
+        while nlstep <= 180:
+            if lon == 180.0:
+                lat = 90.0 - nlstep*latstp
+            else:
+                if nlstep == 0:
+                    lat = 90.0 - polmrg
+                elif nlstep == 180:
+                    lat = -90.0 + polmrg
+                else:
+                    lat = 90.0 - nlstep*latstp
+                vertex = spice.latrec(r, np.radians(lon), np.radians(lat))
+                raydir = spice.vminus(vertex)
+                verticies.append(vertex)
+                raydirs.append(raydir)
+                nrays += 1
+                nlstep += 1
+        lon += lonstp
+        lat = 90.0
+        nlstep = 0
+
+    srflst = [dskdsc.surfce]
+    # call dskxsi
+    xpt, foundarray = spice.dskxv(False, target, srflst, 0.0, fixref, verticies, raydirs)
+    # check output
+    assert len(xpt) == 32580
+    assert len(foundarray) == 32580
+    assert foundarray.all()
+    spice.kclear()
+
 def test_dskz02():
     spice.kclear()
     # open the dsk file
@@ -2327,7 +2384,7 @@ def test_ekcii():
     assert attdsc.size == 1
     assert attdsc.strlen == 1
     assert not attdsc.indexd
-    assert not attdsc.nullok
+    assert attdsc.nullok # this used to be false, although clearly it should be true given the call to ekbseg
     if spice.exists(ekpath):
         os.remove(ekpath) # pragma: no cover
     assert not spice.exists(ekpath)
@@ -3115,13 +3172,87 @@ def test_gfdist():
 
 
 def test_gfevnt():
-    with pytest.raises(NotImplementedError):
-        spice.gfevnt()
+    spice.kclear()
+    spice.furnsh(CoreKernels.testMetaKernel)
+    #
+    et_start = spice.str2et("2001 jan 01 00:00:00.000")
+    et_end   = spice.str2et("2001 dec 31 00:00:00.000")
+    cnfine   = spice.stypes.SPICEDOUBLE_CELL(2)
+    spice.wninsd(et_start, et_end, cnfine)
+    result   = spice.stypes.SPICEDOUBLE_CELL(1000)
+    qpnams   = ["TARGET", "OBSERVER", "ABCORR"]
+    qcpars   = ["MOON  ", "EARTH   ", "LT+S  "]
+    # Set the step size to 1/1000 day and convert to seconds
+    spice.gfsstp(0.001 * spice.spd())
+    # setup callbacks
+    udstep = spiceypy.utils.callbacks.SpiceUDSTEP(spice.gfstep)
+    udrefn = spiceypy.utils.callbacks.SpiceUDREFN(spice.gfrefn)
+    udrepi = spiceypy.utils.callbacks.SpiceUDREPI(spice.gfrepi)
+    udrepu = spiceypy.utils.callbacks.SpiceUDREPU(spice.gfrepu)
+    udrepf = spiceypy.utils.callbacks.SpiceUDREPF(spice.gfrepf)
+    udbail = spiceypy.utils.callbacks.SpiceUDBAIL(spice.gfbail)
+    qdpars = np.zeros(10, dtype=np.float)
+    qipars = np.zeros(10, dtype=np.int32)
+    qlpars = np.zeros(10, dtype=np.int32)
+    # call gfevnt
+    spice.gfevnt(udstep, udrefn, 'DISTANCE', 3, 81, qpnams, qcpars,
+                 qdpars, qipars, qlpars, 'LOCMAX', 0, 1.e-6, 0,
+                 True, udrepi, udrepu, udrepf, 10000,
+                 True, udbail, cnfine, result)
+
+    # Verify the expected results
+    assert len(result) == 26
+    sTimout = "YYYY-MON-DD HR:MN:SC.###### (TDB) ::TDB ::RND"
+    assert spice.timout(result[0], sTimout) == '2001-JAN-24 19:22:01.418715 (TDB)'
+    assert spice.timout(result[1], sTimout) == '2001-JAN-24 19:22:01.418715 (TDB)'
+    assert spice.timout(result[2], sTimout) == '2001-FEB-20 21:52:07.900872 (TDB)'
+    assert spice.timout(result[3], sTimout) == '2001-FEB-20 21:52:07.900872 (TDB)'
+    # Cleanup
+    if spice.gfbail():
+        spice.gfclrh()
+    spice.gfsstp(0.5)
+    spice.kclear()
 
 
 def test_gffove():
-    with pytest.raises(NotImplementedError):
-        spice.gffove()
+    spice.kclear()
+    spice.furnsh(CoreKernels.testMetaKernel)
+    spice.furnsh(CassiniKernels.cassCk)
+    spice.furnsh(CassiniKernels.cassFk)
+    spice.furnsh(CassiniKernels.cassIk)
+    spice.furnsh(CassiniKernels.cassPck)
+    spice.furnsh(CassiniKernels.cassSclk)
+    spice.furnsh(CassiniKernels.cassTourSpk)
+    spice.furnsh(CassiniKernels.satSpk)
+    # Cassini ISS NAC observed Enceladus on 2013-FEB-25 from ~11:00 to ~12:00
+    # Split confinement window, from continuous CK coverage, into two pieces
+    et_start = spice.str2et("2013-FEB-25 10:00:00.000")
+    et_end   = spice.str2et("2013-FEB-25 11:45:00.000")
+    cnfine   = spice.stypes.SPICEDOUBLE_CELL(2)
+    spice.wninsd(et_start, et_end, cnfine)
+    result   = spice.stypes.SPICEDOUBLE_CELL(1000)
+    # call gffove
+    udstep = spiceypy.utils.callbacks.SpiceUDSTEP(spice.gfstep)
+    udrefn = spiceypy.utils.callbacks.SpiceUDREFN(spice.gfrefn)
+    udrepi = spiceypy.utils.callbacks.SpiceUDREPI(spice.gfrepi)
+    udrepu = spiceypy.utils.callbacks.SpiceUDREPU(spice.gfrepu)
+    udrepf = spiceypy.utils.callbacks.SpiceUDREPF(spice.gfrepf)
+    udbail = spiceypy.utils.callbacks.SpiceUDBAIL(spice.gfbail)
+    spice.gfsstp(1.0)
+    spice.gffove('CASSINI_ISS_NAC', 'ELLIPSOID', [0.0, 0.0, 0.0], 'ENCELADUS', 'IAU_ENCELADUS',
+                 'LT+S', 'CASSINI', 1.e-6, udstep, udrefn, True,
+                 udrepi, udrepu, udrepf, True, udbail,
+                 cnfine, result)
+    # Verify the expected results
+    assert len(result) == 2
+    sTimout = "YYYY-MON-DD HR:MN:SC UTC ::RND"
+    assert spice.timout(result[0], sTimout) == '2013-FEB-25 10:42:33 UTC'
+    assert spice.timout(result[1], sTimout) == '2013-FEB-25 11:45:00 UTC'
+    # Cleanup
+    if spice.gfbail():
+        spice.gfclrh()
+    spice.gfsstp(0.5)
+    spice.kclear()
 
 
 def test_gfilum():
@@ -3170,8 +3301,32 @@ def test_gfinth():
 
 
 def test_gfocce():
-    with pytest.raises(NotImplementedError):
-        spice.gfocce()
+    spice.kclear()
+    if spice.gfbail():
+        spice.gfclrh()
+    spice.furnsh(CoreKernels.testMetaKernel)
+    et0 = spice.str2et('2001 DEC 01 00:00:00 TDB')
+    et1 = spice.str2et('2002 JAN 01 00:00:00 TDB')
+    cnfine = spice.stypes.SPICEDOUBLE_CELL(2)
+    spice.wninsd(et0, et1, cnfine)
+    result = spice.stypes.SPICEDOUBLE_CELL(1000)
+    spice.gfsstp(20.0)
+    udstep = spiceypy.utils.callbacks.SpiceUDSTEP(spice.gfstep)
+    udrefn = spiceypy.utils.callbacks.SpiceUDREFN(spice.gfrefn)
+    udrepi = spiceypy.utils.callbacks.SpiceUDREPI(spice.gfrepi)
+    udrepu = spiceypy.utils.callbacks.SpiceUDREPU(spice.gfrepu)
+    udrepf = spiceypy.utils.callbacks.SpiceUDREPF(spice.gfrepf)
+    udbail = spiceypy.utils.callbacks.SpiceUDBAIL(spice.gfbail)
+    # call gfocce
+    spice.gfocce("Any", "moon", "ellipsoid", "iau_moon", "sun",
+                 "ellipsoid", "iau_sun", "lt", "earth", 1.e-6,
+                 udstep, udrefn, True, udrepi, udrepu, udrepf,
+                 True, udbail, cnfine, result)
+    if spice.gfbail():
+        spice.gfclrh()
+    count = spice.wncard(result)
+    assert count == 1
+    spice.kclear()
 
 
 def test_gfoclt():
@@ -5333,8 +5488,9 @@ def test_reordc():
     array = ["one", "three", "two", "zero"]
     iorder = [3, 0, 2, 1]
     outarray = spice.reordc(iorder, 4, 5, array)
-    assert outarray == array  # reordc appears to be broken...
-
+    # reordc appears to be broken...
+    with pytest.raises(AssertionError):
+        assert outarray == ["zero", "one", "two", "three"]
 
 def test_reordd():
     array = [1.0, 3.0, 2.0]
@@ -5354,7 +5510,7 @@ def test_reordl():
     array = [True, True, False]
     iorder = [0, 2, 1]
     outarray = spice.reordl(iorder, 3, array)
-    npt.assert_array_almost_equal(outarray, array)  # reordl has the same issue as reordc
+    npt.assert_array_almost_equal(outarray, [True, False, True])
 
 
 def test_repmc():
@@ -7118,7 +7274,7 @@ def test_swpool():
     assert value[0] == 555.0
     spice.clpool()
     spice.kclear()
-    assert updated
+    assert updated is True
 
 
 def test_sxform():

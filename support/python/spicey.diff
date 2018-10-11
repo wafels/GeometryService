@@ -1,20 +1,19 @@
 diff -ur -x .git SpiceyPy/setup.py /Users/bogdan/git/SpiceyPy/setup.py
---- SpiceyPy/setup.py	2018-02-21 17:14:14.000000000 +0100
-+++ /Users/bogdan/git/SpiceyPy/setup.py	2017-11-09 23:31:18.000000000 +0100
-@@ -81,7 +81,6 @@
-     """
- 
-     def run(self):
--        '''
-         self.check_for_spice()
- 
-         print("Host OS: {0}".format(host_OS))
-@@ -91,7 +90,7 @@
-             self.windows_method()
-         else:
-             sys.exit("Unsupported OS: {0}".format(host_OS))
--        '''
-+
-         install.run(self)
+--- SpiceyPy/setup.py	2018-10-11 17:01:18.000000000 +0200
++++ /Users/bogdan/git/SpiceyPy/setup.py	2018-08-27 20:53:45.000000000 +0200
+@@ -60,7 +60,6 @@
  
      @staticmethod
+     def get_cspice():
+-        '''
+         if InstallCSpice.check_for_spice():
+             print("Host OS: {0}".format(host_OS))
+             if is_unix:
+@@ -69,7 +68,6 @@
+                 InstallCSpice.windows_method()
+             else:
+                 sys.exit("Unsupported OS: {0}".format(host_OS))
+-        '''
+ 
+     @staticmethod
+     def check_for_spice():

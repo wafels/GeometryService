@@ -1,7 +1,7 @@
 """
 The MIT License (MIT)
 
-Copyright (c) [2015-2017] [Andrew Annex]
+Copyright (c) [2015-2018] [Andrew Annex]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,14 +42,14 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+import six
 
-from ctypes import c_char_p, c_bool, c_int, c_double,\
+from ctypes import c_char_p, c_int, c_double,\
     c_char, c_void_p, sizeof, \
     Array, create_string_buffer, cast, Structure, \
     string_at
 
 import numpy
-import six
 from numpy import ctypeslib as numpc
 # Collection of supporting functions for wrapper functions
 __author__ = 'AndrewAnnex'
@@ -96,10 +96,6 @@ def toIntVector(x):
 
 def toIntMatrix(x):
     return IntMatrix.from_param(param=x)
-
-
-def toBoolVector(x):
-    return BoolArray.from_param(param=x)
 
 
 def toPythonString(inString):
@@ -155,12 +151,6 @@ def emptyIntVector(n):
     return (c_int * n)()
 
 
-def emptyBoolVector(n):
-    if isinstance(n, c_int):
-        n = n.value
-    return (c_bool * n)()
-
-
 def cVectorToPython(x):
     """
     Convert the c vector data into the correct python data type
@@ -169,14 +159,16 @@ def cVectorToPython(x):
     :return:
     """
     if isinstance(x[0], bool):
-        return numpy.fromiter(x, numpy.bool, count=len(x))
+        return numpy.frombuffer(x, dtype=numpy.bool).copy()
     elif isinstance(x[0], int):
-        return numpy.fromiter(x, numpy.int_, count=len(x))
+        return numpy.frombuffer(x, dtype=numpy.int32).copy()
     elif isinstance(x[0], float):
-        return numpy.fromiter(x, numpy.float64, count=len(x))
+        return numpy.frombuffer(x, dtype=numpy.float64).copy()
     elif isinstance(x[0].value, bytes):
         return [toPythonString(y) for y in x]
 
+def cIntVectorToBoolPython(x):
+    return numpc.as_array(x).copy().astype(bool)
 
 def cMatrixToNumpy(x):
     """
@@ -184,7 +176,7 @@ def cMatrixToNumpy(x):
     :param x: thing to convert
     :return: numpy.ndarray
     """
-    return numpc.as_array(x)
+    return numpc.as_array(x).copy()
 
 
 def stringToCharP(inobject, inlen=None):
@@ -258,7 +250,7 @@ class DoubleArrayType:
         # return param.data_as(POINTER(c_double))
         # the above older method does not work with
         # functions which take vectors of known size
-        return numpy.ctypeslib.as_ctypes(param)
+        return numpc.as_ctypes(param.astype(numpy.float64, casting='same_kind', copy=False))
 
     # Cast from array.array objects
     def from_array(self, param):
@@ -291,11 +283,11 @@ class DoubleMatrixType:
 
     # Cast from a numpy array
     def from_ndarray(self, param):
-        return numpy.ctypeslib.as_ctypes(param)
+        return numpc.as_ctypes(param.astype(numpy.float64, casting='same_kind', copy=False))
 
     # Cast from a numpy matrix
     def from_matrix(self, param):
-        return numpy.ctypeslib.as_ctypes(param)
+        return numpc.as_ctypes(param.astype(numpy.float64, casting='same_kind', copy=False))
 
 
 class IntArrayType:
@@ -322,10 +314,8 @@ class IntArrayType:
 
     # Cast from a numpy array
     def from_ndarray(self, param):
-        # return param.data_as(POINTER(c_int))
-        # not sure if long is same as int, it should be..
-        # return numpy.ctypeslib.as_ctypes(param)
-        return self.from_param(param.tolist())
+        # cspice always uses a int size half as big as the float, ie int32 if a float64 system default
+        return numpc.as_ctypes(param.astype(numpy.int32, casting='same_kind', copy=False))
 
     # Cast from array.array objects
     def from_array(self, param):
@@ -358,40 +348,13 @@ class IntMatrixType:
 
     # Cast from a numpy array
     def from_ndarray(self, param):
-        return numpy.ctypeslib.as_ctypes(param)
+        # cspice always uses a int size half as big as the float, ie int32 if a float64 system default
+        return numpc.as_ctypes(param.astype(numpy.int32, casting='same_kind', copy=False))
 
     # Cast from a numpy matrix
     def from_matrix(self, param):
-        return numpy.ctypeslib.as_ctypes(param)
-
-class BoolArrayType:
-    # Class type that will handle all int vectors,
-    # inspiration from python cookbook 3rd edition
-    def from_param(self, param):
-        typename = type(param).__name__
-        if hasattr(self, 'from_' + typename):
-            return getattr(self, 'from_' + typename)(param)
-        elif isinstance(param, Array):
-            return param
-        else:
-            raise TypeError("Can't convert %s" % typename)
-
-    # Cast from lists/tuples
-    def from_list(self, param):
-        val = ((c_bool) * len(param))(*param)
-        return val
-
-    # Cast from Tuple
-    def from_tuple(self, param):
-        val = ((c_bool) * len(param))(*param)
-        return val
-
-    # Cast from a numpy array
-    def from_ndarray(self, param):
-        # return param.data_as(POINTER(c_int))
-        # not sure if long is same as int, it should be..
-        # return numpy.ctypeslib.as_ctypes(param)
-        return self.from_param(param.tolist())
+        # cspice always uses a int size half as big as the float, ie int32 if a float64 system default
+        return numpc.as_ctypes(param.astype(numpy.int32, casting='same_kind', copy=False))
 
 
 DoubleArray = DoubleArrayType()
@@ -399,8 +362,6 @@ DoubleArray = DoubleArrayType()
 IntArray = IntArrayType()
 
 IntMatrix = IntMatrixType()
-
-BoolArray = BoolArrayType()
 
 DoubleMatrix = DoubleMatrixType()
 
@@ -656,8 +617,8 @@ class SpiceEKAttDsc(Structure):
         ('_dtype', SpiceEKDataType),
         ('_strlen', c_int),
         ('_size', c_int),
-        ('_indexd', c_bool),
-        ('_nullok', c_bool)
+        ('_indexd', c_int),
+        ('_nullok', c_int)
     ]
 
     @property
@@ -678,11 +639,11 @@ class SpiceEKAttDsc(Structure):
 
     @property
     def indexd(self):
-        return self._indexd
+        return bool(self._indexd)
 
     @property
     def nullok(self):
-        return self._nullok
+        return bool(self._nullok)
 
     def __str__(self):
         return '<SpiceEKAttDsc cclass = %s, dtype = %s, strlen = %s, size = %s, indexd = %s, nullok = %s >' % \
