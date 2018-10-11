@@ -1,6 +1,6 @@
 # Solar System Geometry Service
 
-RPC for geometry computations based on [SPICE](<https://naif.jpl.nasa.gov/naif/>) and [Spyne](<http://spyne.io/>). Returns either JSON or [MessagePack](<https://msgpack.org>) encoded responses.
+RPC for geometry computations based on [SPICE](https://naif.jpl.nasa.gov/naif/) and [Spyne](http://spyne.io/). Returns either JSON or [MessagePack](https://msgpack.org) encoded responses.
 
 ## Functions
 
@@ -17,6 +17,8 @@ Other arguments:
 - `utc` - start of time range
 - `utc_end` (optional) - end of time range
 - `deltat` (optional) - time step
+
+At the moment, the following locations are available: all JPL DE430 ephemeris locations (solar system planets, Pluto, the Moon), comet 67P/Churyumov-Gerasimenko. Also available are the following spacecraft trajectories (existing or planned): SOHO, STEREO, SDO, PROBA-2, PROBA-3, Solar Orbiter, and Parker Solar Probe.
 
 ## Example
 
