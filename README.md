@@ -30,4 +30,6 @@ returns
 
 ## Installation
 
+[Git Large File Storage](https://git-lfs.github.com) support is required for check-out of some large binary SPICE kernels.
+
 A sample Dockerfile is provided. In the default configuration it runs on port 7789.
