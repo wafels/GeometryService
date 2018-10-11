@@ -4,11 +4,9 @@ RPC server for geometry computations based on [SPICE Toolkit](https://naif.jpl.n
 
 ## Functions
 
-Several reference frames usual in heliophysics are known.
+- `position` and `state` (in km, km/s, and/or radian) of `target` relative to `observer` in `ref` reference frame, optionally corrected for `abcorr`; representations (`kind`): `rectangular` (default), `latitudinal`, `radec`, `spherical`, `cylindrical`;
 
-- `position` and `state` (in km and km/s) of `target` relative to `observer` in `ref` reference frame, optionally corrected for `abcorr`; representations (`kind`): `rectangular` (default), `latitudinal`, `radec`, `spherical`, `cylindrical`;
-
-- `transform` -- transform between `from_ref` reference frame and `to_ref` reference frame; representations (`kind`): `matrix` (default), `angle` (Euler, rad), `quaternion`;
+- `transform` -- transform between `from_ref` reference frame and `to_ref` reference frame; representations (`kind`): `matrix` (default), `angle` (Euler, radian), `quaternion` (SPICE format);
 
 - `utc2scs` and `scs2utc` -- transform between UTC and spacecraft OBET (Solar Orbiter supported).
 
@@ -17,6 +15,8 @@ Other arguments:
 - `utc` - start of time range
 - `utc_end` (optional) - end of time range
 - `deltat` (optional) - time step
+
+Several reference frames often used in the heliophysics domain are known.
 
 At the moment, the following locations are available: all JPL DE430 ephemeris locations (solar system planets, Pluto, the Moon), comet 67P/Churyumov-Gerasimenko. Also available are the following spacecraft trajectories (existing or planned): SOHO, STEREO, SDO, PROBA-2, PROBA-3, Solar Orbiter, and Parker Solar Probe.
 
