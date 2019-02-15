@@ -3,8 +3,7 @@ project(SIDC_service_geometry C)
 cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
-# always relink to avoid bugs in cmake 2.6
-set(CMAKE_NO_BUILTIN_CHRPATH TRUE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -Wall -W -pipe -std=gnu99")
 
