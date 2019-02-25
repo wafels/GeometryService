@@ -1,6 +1,6 @@
 diff -ur -x .git SpiceyPy/setup.py /Users/bogdan/git/SpiceyPy/setup.py
---- SpiceyPy/setup.py	2018-10-11 17:01:18.000000000 +0200
-+++ /Users/bogdan/git/SpiceyPy/setup.py	2018-08-27 20:53:45.000000000 +0200
+--- SpiceyPy/setup.py	2019-02-25 07:47:06.000000000 +0100
++++ /Users/bogdan/git/SpiceyPy/setup.py	2019-02-25 07:38:26.000000000 +0100
 @@ -60,7 +60,6 @@
  
      @staticmethod

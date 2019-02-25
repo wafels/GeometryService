@@ -1,7 +1,7 @@
 """
 The MIT License (MIT)
 
-Copyright (c) [2015-2018] [Andrew Annex]
+Copyright (c) [2015-2019] [Andrew Annex]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -296,7 +296,7 @@ readme.close()
 
 setup(
     name='spiceypy',
-    version='2.1.2',
+    version='2.2.0',
     license='MIT',
     author='Andrew Annex',
     author_email='ama6fy@virginia.edu',
