@@ -1,0 +1,27 @@
+KPL/IK
+
+\begintext
+
+    Outer FOV =                    1.6   [deg] -900100 assumed square (probably circular due to vignetting)
+    Inner FOV = 17.551 * 2 / 60 =  0.585 [deg] -900101 assumed circular (100% geometrical vignetting)
+
+\begindata
+
+        INS-900100_FOV_SHAPE          = 'RECTANGLE'
+        INS-900100_FOV_FRAME          = 'P3SEQ'
+        INS-900100_BORESIGHT          = ( 0 0 -1 )
+        INS-900100_FOV_CLASS_SPEC     = 'ANGLES'
+        INS-900100_FOV_REF_VECTOR     = ( 0 1 0 )
+        INS-900100_FOV_REF_ANGLE      = .8
+        INS-900100_FOV_CROSS_ANGLE    = .8
+        INS-900100_FOV_ANGLE_UNITS    = 'DEGREES'
+
+        INS-900101_FOV_SHAPE          = 'CIRCLE'
+        INS-900101_FOV_FRAME          = 'P3SEQ'
+        INS-900101_BORESIGHT          = ( 0 0 -1 )
+        INS-900101_FOV_CLASS_SPEC     = 'ANGLES'
+        INS-900101_FOV_REF_VECTOR     = ( 0 1 0 )
+        INS-900101_FOV_REF_ANGLE      = .2925167
+        INS-900101_FOV_ANGLE_UNITS    = 'DEGREES'
+
+\begintext

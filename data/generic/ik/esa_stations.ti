@@ -1,0 +1,26 @@
+KPL/IK
+
+\begindata
+
+        NAIF_BODY_CODE += ( -399530 )
+        NAIF_BODY_NAME += ( 'REDU-3_ANT' )
+        NAIF_BODY_CODE += ( -399730 )
+        NAIF_BODY_NAME += ( 'SANTA-MARIA_ANT' )
+
+        INS-399530_FOV_SHAPE          = 'CIRCLE'
+        INS-399530_FOV_FRAME          = 'REDU-3_TOPO'
+        INS-399530_BORESIGHT          = ( 0 0 1 )
+        INS-399530_FOV_CLASS_SPEC     = 'ANGLES'
+        INS-399530_FOV_REF_VECTOR     = ( 1 0 0 )
+        INS-399530_FOV_REF_ANGLE      = 85
+        INS-399530_FOV_ANGLE_UNITS    = 'DEGREES'
+
+        INS-399730_FOV_SHAPE          = 'CIRCLE'
+        INS-399730_FOV_FRAME          = 'SANTA-MARIA_TOPO'
+        INS-399730_BORESIGHT          = ( 0 0 1 )
+        INS-399730_FOV_CLASS_SPEC     = 'ANGLES'
+        INS-399730_FOV_REF_VECTOR     = ( 1 0 0 )
+        INS-399730_FOV_REF_ANGLE      = 80
+        INS-399730_FOV_ANGLE_UNITS    = 'DEGREES'
+
+\begintext
