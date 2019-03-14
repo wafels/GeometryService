@@ -4,17 +4,17 @@ RPC server for geometry computations based on [SPICE Toolkit](https://naif.jpl.n
 
 ## Functions
 
-- `position` and `state` (in km, km/s, and/or radian) of `target` relative to `observer` in `ref` reference frame, optionally corrected for `abcorr` (`NONE` - geometric, default, `LT`, `LT%2BS`, `CN`, `CN%2BS`, `XLT`, `XLT%2BS`, `XCN`, `XCN%2BS`, see SPICE documentation); representations (`kind`): `rectangular` (default), `latitudinal`, `radec`, `spherical`, `cylindrical`;
+- `position` and `state` (in km, km/s, and/or radian) of `target` relative to `observer` in `ref` reference frame, optionally corrected for `abcorr` (`NONE` - geometric, default, `LT`, `LT%2BS`, `CN`, `CN%2BS`, `XLT`, `XLT%2BS`, `XCN`, `XCN%2BS`, see SPICE documentation); representations (`kind`): `rectangular` (default), `latitudinal`, `radec`, `spherical`, `cylindrical`, `geodetic`;
 
 - `transform` -- transform between `from_ref` reference frame and `to_ref` reference frame; representations (`kind`): `matrix` (default), `angle` (Euler, radian), `quaternion` (SPICE format);
 
-- `utc2scs` and `scs2utc` -- transform between UTC and spacecraft OBET (Solar Orbiter supported).
+- `utc2scs` and `scs2utc` -- transform between UTC and spacecraft OBET (PROBA-3 and Solar Orbiter supported).
 
 Other arguments:
 
 - `utc` - start of time range
 - `utc_end` (optional) - end of time range
-- `deltat` (optional) - time step
+- `deltat` (optional) - time step/delay
 
 Several reference frames often used in the heliophysics domain are known.
 
