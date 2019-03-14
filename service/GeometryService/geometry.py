@@ -112,11 +112,17 @@ def utc2scs_spice(tais, sc):
     else:
         return res
 
-def scs2utc_spice(scs, sc):
+def scs2utc_spice(scs, sc, deltat):
     res = {}
     try:
         scid = sp.bods2c(sc)
         et = sp.scs2e(scid, scs)
+
+        if deltat is not None:
+            tai = sp.unitim(et, 'et', 'tai')
+            tai += deltat
+            et = sp.unitim(tai, 'tai', 'et')
+
         utc = sp.et2utc(et, 'isoc', 3)
 
         res[scs] = utc
@@ -199,8 +205,8 @@ def utc2scs(utc, utc_end, deltat, sc):
     tais = utc2tai(utc, utc_end, deltat)
     return utc2scs_spice(tais, sc)
 
-def scs2utc(scs, sc):
-    return scs2utc_spice(scs, sc)
+def scs2utc(scs, sc, deltat):
+    return scs2utc_spice(scs, sc, deltat)
 
 _POSITION_KIND = {
     None         : lambda x: x,

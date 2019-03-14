@@ -42,10 +42,10 @@ class GeometryService(Service):
     def utc2scs(utc, sc, utc_end, deltat):
         return geometry.utc2scs(utc, utc_end, deltat, sc)
 
-    @srpc(Unicode(min_occurs=1), Unicode(min_occurs=1),
+    @srpc(Unicode(min_occurs=1), Unicode(min_occurs=1), Float(min_occurs=0),
           _returns=AnyDict, _throws=geometry.GeometrySpiceError)
-    def scs2utc(scs, sc):
-        return geometry.scs2utc(scs, sc)
+    def scs2utc(scs, sc, deltat):
+        return geometry.scs2utc(scs, sc, deltat)
 
 #####
 
