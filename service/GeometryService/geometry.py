@@ -208,7 +208,8 @@ _POSITION_KIND = {
     'latitudinal': sp.reclat,
     'radec'      : sp.recrad,
     'spherical'  : sp.recsph,
-    'cylindrical': sp.reccyl
+    'cylindrical': sp.reccyl,
+    'geodetic'   : lambda x: sp.recgeo(x, 6378.14, 0.0033536422844278)
 }
 
 _TRANSFORM_KIND = {
