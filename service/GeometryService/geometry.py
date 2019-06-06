@@ -241,11 +241,11 @@ def xform(utc, utc_end, deltat, kind, from_ref, to_ref):
 
 def utc2scs(utc, utc_end, deltat, sc):
     tais = utc2tai(utc, utc_end, deltat)
-    return utc2scs_spice(tais, sc)
+    return wrap_result([utc2scs_spice(tais, sc)])
 
 
 def scs2utc(scs, sc, deltat):
-    return scs2utc_spice(scs, sc, deltat)
+    return wrap_result([scs2utc_spice(scs, sc, deltat)])
 
 
 _POSITION_KIND = {
