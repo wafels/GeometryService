@@ -7,6 +7,7 @@ RUN apt-get -y autoremove && apt-get clean && apt-get autoclean
 RUN wget -nv https://packagecloud.io/github/git-lfs/packages/debian/stretch/git-lfs_2.7.2_amd64.deb/download
 RUN dpkg -i download
 
+# ARG CACHE_DATE=1970-01-01
 RUN git clone https://github.com/Helioviewer-Project/GeometryService.git
 RUN cd /root && mkdir build && cd build && cmake /GeometryService -G Ninja && ninja install
 

@@ -8,4 +8,4 @@
 # git pull origin
 # cd -
 
-docker build --rm -t geometry-service .
+docker build --build-arg CACHE_DATE="$(date)" --rm -t geometry-service .
