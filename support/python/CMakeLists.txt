@@ -15,7 +15,7 @@ macro(bootstrap target)
     add_custom_target(${target} ALL DEPENDS ${OUTPUT})
 endmacro()
 
-bootstrap(pypa-virtualenv-c9cf748)
+bootstrap(pypa-virtualenv-ce9343c)
 endif(NOT MAXIMAL)
 
 configure_file(install_spicey.sh ${CMAKE_CURRENT_BINARY_DIR}/install_spicey.sh)
