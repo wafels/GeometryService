@@ -8,16 +8,17 @@ KPL/FK
     NAIF_BODY_CODE += ( -900 )
     NAIF_BODY_NAME += ( 'P3_CSC' )
     NAIF_BODY_CODE += ( -900100 )
+    NAIF_BODY_NAME += ( 'P3_CPLF_CENTER' )
+
+    NAIF_BODY_CODE += ( -900200 )
     NAIF_BODY_NAME += ( 'P3_CI' )
-    NAIF_BODY_CODE += ( -900101 )
+    NAIF_BODY_CODE += ( -900201 )
     NAIF_BODY_NAME += ( 'P3_CI_IO' )
-    NAIF_BODY_CODE += ( -900 )
-    NAIF_BODY_NAME += ( 'P3_CI_PUPIL' )
 
     NAIF_BODY_CODE += ( -901 )
     NAIF_BODY_NAME += ( 'P3_OSC' )
-    NAIF_BODY_CODE += ( -901 )
-    NAIF_BODY_NAME += ( 'P3_OSC_OD' )
+    NAIF_BODY_CODE += ( -901100 )
+    NAIF_BODY_NAME += ( 'P3_OPLF_CENTER' )
 
 \begintext
 
@@ -74,7 +75,7 @@ KPL/FK
 
 \begintext
 
-    Matrix TBD
+    CPLF matrix TBD
 
 \begindata
 
@@ -82,7 +83,7 @@ KPL/FK
     FRAME_-900011_NAME            = 'P3_CPLF'
     FRAME_-900011_CLASS           = 4
     FRAME_-900011_CLASS_ID        = -900011
-    FRAME_-900011_CENTER          = 'P3_CI_PUPIL'
+    FRAME_-900011_CENTER          = 'P3_CPLF_CENTER'
 
     TKFRAME_-900011_SPEC          = 'MATRIX'
     TKFRAME_-900011_RELATIVE      = 'P3_CRBF'
@@ -162,7 +163,7 @@ KPL/FK
     FRAME_-901001_NAME            = 'P3_STF'
     FRAME_-901001_CLASS           = 5
     FRAME_-901001_CLASS_ID        = -901001
-    FRAME_-901001_CENTER          = 'P3_OSC_OD'
+    FRAME_-901001_CENTER          = 'P3_OPLF_CENTER'
 
     FRAME_-901001_RELATIVE        = 'J2000'
     FRAME_-901001_DEF_STYLE       = 'PARAMETERIZED'
@@ -170,7 +171,7 @@ KPL/FK
 
     FRAME_-901001_PRI_AXIS        = '-X'
     FRAME_-901001_PRI_VECTOR_DEF  = 'OBSERVER_TARGET_POSITION'
-    FRAME_-901001_PRI_OBSERVER    = 'P3_OSC_OD'
+    FRAME_-901001_PRI_OBSERVER    = 'P3_OPLF_CENTER'
     FRAME_-901001_PRI_TARGET      = 10
     FRAME_-901001_PRI_ABCORR      = 'LT+S'
 
@@ -202,7 +203,7 @@ KPL/FK
 
 \begintext
 
-    Matrix TBD
+    OPLF matrix TBD
 
 \begindata
 
@@ -210,7 +211,7 @@ KPL/FK
     FRAME_-901011_NAME            = 'P3_OPLF'
     FRAME_-901011_CLASS           = 4
     FRAME_-901011_CLASS_ID        = -901011
-    FRAME_-901011_CENTER          = 'P3_OSC_OD'
+    FRAME_-901011_CENTER          = 'P3_OPLF_CENTER'
 
     TKFRAME_-901011_SPEC          = 'MATRIX'
     TKFRAME_-901011_RELATIVE      = 'P3_ORBF'
@@ -221,14 +222,25 @@ KPL/FK
 \begintext
 
     Fictive OSC 150m in front of CSC in the Sun direction
+    Translations of PLF TBD
 
 \begindata
 
-    SITES = ( 'P3_OSC' )
+    SITES = ( 'P3_OSC' 'P3_OPLF_CENTER' 'P3_CPLF_CENTER' )
 
-    P3_OSC_CENTER = 'P3_CSC'
-    P3_OSC_FRAME  = 'P3_CSEQ'
-    P3_OSC_IDCODE = -901
-    P3_OSC_XYZ    = ( 0,  0, -0.15 )
+    P3_OSC_CENTER         = 'P3_CSC'
+    P3_OSC_FRAME          = 'P3_CSEQ'
+    P3_OSC_IDCODE         = -901
+    P3_OSC_XYZ            = ( 0, 0, -0.15 )
+
+    P3_OPLF_CENTER_CENTER = 'P3_OSC'
+    P3_OPLF_CENTER_FRAME  = 'P3_ORBF'
+    P3_OPLF_CENTER_IDCODE = -901100
+    P3_OPLF_CENTER_XYZ    = ( 0, 0, 0 )
+
+    P3_CPLF_CENTER_CENTER = 'P3_CSC'
+    P3_CPLF_CENTER_FRAME  = 'P3_CRBF'
+    P3_CPLF_CENTER_IDCODE = -900100
+    P3_CPLF_CENTER_XYZ    = ( 0, 0, 0 )
 
 \begintext
