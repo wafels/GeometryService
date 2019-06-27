@@ -56,7 +56,43 @@ KPL/FK
 
 \begintext
 
-    PROBA-3 CSC Solar Equatorial frame (P3CSEQ):
+    Fictive CRBF, normally CK type
+
+\begindata
+
+    FRAME_P3_CRBF                 = -900010
+    FRAME_-900010_NAME            = 'P3_CRBF'
+    FRAME_-900010_CLASS           = 4
+    FRAME_-900010_CLASS_ID        = -900010
+    FRAME_-900010_CENTER          = 'P3_CSC'
+
+    TKFRAME_-900010_SPEC          = 'MATRIX'
+    TKFRAME_-900010_RELATIVE      = 'P3_CSEQ'
+    TKFRAME_-900010_MATRIX        = ( 1 0 0
+                                      0 1 0
+                                      0 0 1 )
+
+\begintext
+
+    Matrix TBD
+
+\begindata
+
+    FRAME_P3_CPLF                 = -900011
+    FRAME_-900011_NAME            = 'P3_CPLF'
+    FRAME_-900011_CLASS           = 4
+    FRAME_-900011_CLASS_ID        = -900011
+    FRAME_-900011_CENTER          = 'P3_CI_PUPIL'
+
+    TKFRAME_-900011_SPEC          = 'MATRIX'
+    TKFRAME_-900011_RELATIVE      = 'P3_CRBF'
+    TKFRAME_-900011_MATRIX        = ( 1 0 0
+                                      0 1 0
+                                      0 0 1 )
+
+\begintext
+
+    PROBA-3 CSC Solar Equatorial frame (P3_CSEQ):
         * Origin at the centre of mass of the CSC
         * Z along the Sun-to-origin vector (away from the Sun)
         * Y in the plane defined by Z and the solar rotation axis, pointing
@@ -65,29 +101,29 @@ KPL/FK
 
 \begindata
 
-    FRAME_P3_CSEQ                 = -900010
-    FRAME_-900010_NAME            = 'P3_CSEQ'
-    FRAME_-900010_CLASS           = 5
-    FRAME_-900010_CLASS_ID        = -900010
-    FRAME_-900010_CENTER          = 'P3_CSC'
+    FRAME_P3_CSEQ                 = -900099
+    FRAME_-900099_NAME            = 'P3_CSEQ'
+    FRAME_-900099_CLASS           = 5
+    FRAME_-900099_CLASS_ID        = -900099
+    FRAME_-900099_CENTER          = 'P3_CSC'
 
-    FRAME_-900010_RELATIVE        = 'J2000'
-    FRAME_-900010_DEF_STYLE       = 'PARAMETERIZED'
-    FRAME_-900010_FAMILY          = 'TWO-VECTOR'
+    FRAME_-900099_RELATIVE        = 'J2000'
+    FRAME_-900099_DEF_STYLE       = 'PARAMETERIZED'
+    FRAME_-900099_FAMILY          = 'TWO-VECTOR'
 
-    FRAME_-900010_PRI_AXIS        = '-Z'
-    FRAME_-900010_PRI_VECTOR_DEF  = 'OBSERVER_TARGET_POSITION'
-    FRAME_-900010_PRI_OBSERVER    = 'P3_CSC'
-    FRAME_-900010_PRI_TARGET      = 10
-    FRAME_-900010_PRI_ABCORR      = 'LT+S'
+    FRAME_-900099_PRI_AXIS        = '-Z'
+    FRAME_-900099_PRI_VECTOR_DEF  = 'OBSERVER_TARGET_POSITION'
+    FRAME_-900099_PRI_OBSERVER    = 'P3_CSC'
+    FRAME_-900099_PRI_TARGET      = 10
+    FRAME_-900099_PRI_ABCORR      = 'LT+S'
 
-    FRAME_-900010_SEC_AXIS        = 'Y'
-    FRAME_-900010_SEC_VECTOR_DEF  = 'CONSTANT'
-    FRAME_-900010_SEC_FRAME       = 'IAU_SUN'
-    FRAME_-900010_SEC_SPEC        = 'RECTANGULAR'
-    FRAME_-900010_SEC_VECTOR      = ( 0, 0, 1 )
+    FRAME_-900099_SEC_AXIS        = 'Y'
+    FRAME_-900099_SEC_VECTOR_DEF  = 'CONSTANT'
+    FRAME_-900099_SEC_FRAME       = 'IAU_SUN'
+    FRAME_-900099_SEC_SPEC        = 'RECTANGULAR'
+    FRAME_-900099_SEC_VECTOR      = ( 0, 0, 1 )
 
-    FRAME_-900010_ROTATION_STATE  = 'ROTATING'
+    FRAME_-900099_ROTATION_STATE  = 'ROTATING'
 
 \begintext
 
@@ -145,6 +181,42 @@ KPL/FK
     FRAME_-901001_SEC_VECTOR      = ( 0, 0, 1 )
 
     FRAME_-901001_ROTATION_STATE  = 'ROTATING'
+
+\begintext
+
+    Fictive ORBF, normally CK type
+
+\begindata
+
+    FRAME_P3_ORBF                 = -901010
+    FRAME_-901010_NAME            = 'P3_ORBF'
+    FRAME_-901010_CLASS           = 4
+    FRAME_-901010_CLASS_ID        = -901010
+    FRAME_-901010_CENTER          = 'P3_OSC'
+
+    TKFRAME_-901010_SPEC          = 'MATRIX'
+    TKFRAME_-901010_RELATIVE      = 'P3_CSEQ'
+    TKFRAME_-901010_MATRIX        = ( 1 0 0
+                                      0 1 0
+                                      0 0 1 )
+
+\begintext
+
+    Matrix TBD
+
+\begindata
+
+    FRAME_P3_OPLF                 = -901011
+    FRAME_-901011_NAME            = 'P3_OPLF'
+    FRAME_-901011_CLASS           = 4
+    FRAME_-901011_CLASS_ID        = -901011
+    FRAME_-901011_CENTER          = 'P3_OSC_OD'
+
+    TKFRAME_-901011_SPEC          = 'MATRIX'
+    TKFRAME_-901011_RELATIVE      = 'P3_ORBF'
+    TKFRAME_-901011_MATRIX        = ( 1 0 0
+                                      0 1 0
+                                      0 0 1 )
 
 \begintext
 

@@ -236,7 +236,7 @@ def xform(utc, utc_end, deltat, kind, from_ref, to_ref):
     kwargs = {"from_ref": from_ref, "to_ref": to_ref}
 
     tais = utc2tai(utc, utc_end, deltat)
-    return distribute_work(xform_spice, xfunc, tais, **kwargs)
+    return wrap_result(distribute_work(xform_spice, xfunc, tais, **kwargs))
 
 
 def utc2scs(utc, utc_end, deltat, sc):
