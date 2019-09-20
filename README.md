@@ -1,3 +1,6 @@
+
+Use https://gitlab.com/SWHV/GeometryService
+
 # Solar System Geometry Service
 
 RPC server for geometry computations based on [SPICE Toolkit](https://naif.jpl.nasa.gov/naif/), [SpiceyPy](https://github.com/AndrewAnnex/SpiceyPy/), and [Spyne](http://spyne.io/). Returns either JSON or [MessagePack](https://msgpack.org) encoded responses.
